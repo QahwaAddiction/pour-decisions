@@ -1,5 +1,9 @@
 # Pour Decisions
 
+[![Live app](https://img.shields.io/badge/▶_Open_the_live_app-6B5FA8?style=for-the-badge)](https://qahwaaddiction.github.io/pour-decisions/)
+
+**Live:** https://qahwaaddiction.github.io/pour-decisions/ · On a phone, open it and choose *Add to Home Screen* to install it like an app.
+
 A pour-over coffee brewing assistant. Tell it about your beans — roast level,
 process, origin, elevation, roast date — and the goal you're chasing (clarity,
 sweetness, body, and so on), and it recommends water temperature, grind, ratio,
