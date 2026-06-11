@@ -1,9 +1,9 @@
 {
-  "name": "pour-decisions",
+  "name": "calibratedpours",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Pour Decisions — a pour-over coffee brewing assistant.",
+  "description": "CalibratedPours — precision pour-over brewing recipes.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
