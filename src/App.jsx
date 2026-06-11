@@ -1,11 +1,56 @@
 import { useState, useEffect, useRef } from "react";
 
 const C = {
-  bg:"#FAF9F5", card:"#FFFFFF", ink:"#0A0A0A", stone:"#3C3A36",
-  muted:"#8C8A84", line:"#E4E0D6",
-  accent:"#6B5FA8", accent2:"#C44FA8", gold:"#C9A227", white:"#FFFFFF",
+  bg:"#FFFFFF", card:"rgba(255,255,255,0.55)", ink:"#1E0A3C", stone:"#4B4368",
+  muted:"#9A8FB8", line:"#E6DFF4",
+  accent:"#7B2FBE", accent2:"#C44FA8", gold:"#C9A227", white:"#FFFFFF",
 };
 const F = "'Inter', sans-serif";
+const FD = "'Fraunces', 'Inter', serif";
+
+// ── LANGUAGE (en / ar) ───────────────────────────────────────────
+let LANG="en";
+const AR={
+  "Precision pour-over recipes":"وصفات قهوة مقطّرة بدقة",
+  "☆ Bean Journal":"☆ سجلّ البن","Bean Journal":"سجلّ البن","Bean\nJournal":"سجلّ\nالبن",
+  "Tell me about\nthe bean":"حدّثني عن\nالبن","Choose your\ntaste profile":"اختر\nطابع المذاق",
+  "Configure\nthe machine":"جهّز\nالماكينة","How are you\nbrewing it":"كيف\nستحضّرها؟",
+  "Share\nyour brew":"شارك\nقهوتك","How did\nit taste?":"كيف كان\nالطعم؟",
+  "Bean":"البن","Goal":"الهدف","Brew":"التحضير","Recipe":"الوصفة",
+  "Coffee Name":"اسم القهوة","Origin":"المنشأ","Processing Method":"طريقة المعالجة","Roast Level":"درجة التحميص","required":"مطلوب","optional · improves accuracy":"اختياري · يحسّن الدقة",
+  "Roast Date":"تاريخ التحميص","Days Off Roast":"أيام منذ التحميص","Status":"الحالة","More Details":"تفاصيل إضافية",
+  "Region":"المنطقة","Altitude (masl)":"الارتفاع (متر)","Variety":"السلالة","Tasting Notes (from bag)":"إيحاءات المذاق (من الكيس)",
+  "or enter manually":"أو أدخل البيانات يدوياً","Paste the roaster's description":"الصق وصف المحمصة",
+  "📋 Paste Bag Text — auto-fill the form":"📋 الصق نص الكيس — تعبئة تلقائية","Cancel":"إلغاء","Parse & Fill":"حلّل واملأ",
+  "‹ Back":"‹ رجوع","Continue →":"متابعة ←","Generate":"أنشئ الوصفة",
+  "How do you like your coffee?":"كيف تحب قهوتك؟","Hot":"ساخنة","Iced":"مثلّجة",
+  "Dose":"الجرعة","Ratio":"النسبة","Target Ratio (total drink)":"النسبة المستهدفة (المشروب كاملاً)",
+  "Dripper on the machine":"القمع المركّب على الماكينة","Select your dripper":"اختر القمع","Paper Filter":"ورق الفلتر","Select filter":"اختر الفلتر",
+  "Ice Amount":"كمية الثلج","Auto":"تلقائي","Manual":"يدوي","Ice Grams":"غرامات الثلج","Bloom Ratio":"نسبة الإزهار","Yield Preview":"معاينة الناتج",
+  "Brewer":"أداة التحضير","Filter":"الفلتر","Grinder":"المطحنة","Brew Mode":"وضع التحضير",
+  "Your Recipe":"وصفتك","Edit":"تعديل","New":"جديد","Coffee":"القهوة","Pours":"الصبّات","Pour Sequence":"تسلسل الصبّات",
+  "Grind":"الطحن","Temp":"الحرارة","Time":"الوقت","target":"الهدف",
+  "Dripper":"القمع","Coffee : Water":"قهوة : ماء","Grind Size":"درجة الطحن","Grinder Speed":"سرعة المطحنة",
+  "Temperature":"الحرارة","Expected Cup":"الفنجان المتوقع","Agitation":"التحريك","Bloom":"الإزهار","Brew Time":"وقت التحضير",
+  "Water":"الماء","Hot Water":"الماء الساخن","Ice":"الثلج","Rinse & preheat":"اشطف وسخّن",
+  "Share Card":"بطاقة المشاركة","Brewed it?":"حضّرتها؟","Open Coffee Doctor":"افتح طبيب القهوة",
+  "Rate this brew":"قيّم هذه القهوة","Save to Journal":"احفظ في السجل","Copy":"نسخ","Copy Recipe Text":"انسخ نص الوصفة",
+  "Brew Notes":"ملاحظات التحضير","Coffee Fact":"معلومة قهوة","Brewer's Tip":"نصيحة المحضّر",
+  "Clarity":"صفاء","Sweetness":"حلاوة","Balanced":"متوازن","Body":"قوام","Acidity":"حموضة",
+  "Light":"فاتح","Light-Med":"فاتح-وسط","Medium":"وسط","Med-Dark":"وسط-غامق","Dark":"غامق",
+  "1:3 (recommended)":"1:3 (موصى بها)","Rinse first":"اشطفه أولاً","No rinse needed":"لا يحتاج شطفاً",
+  "Calibrating":"جاري المعايرة","Reading the bean":"قراءة البن","Balancing extraction":"موازنة الاستخلاص","Locking temperature":"تثبيت الحرارة",
+  "What do you want more of?":"ماذا تريد أكثر؟","Or what went wrong?":"أو ما الذي لم يعجبك؟",
+  "Coffee Doctor":"طبيب القهوة","Home":"الرئيسية","About":"حول","Close":"إغلاق","Delete":"حذف",
+  "Select processing":"اختر طريقة المعالجة","Select brewer":"اختر الأداة","‹ Home":"‹ الرئيسية","‹ Recipe":"‹ الوصفة",
+  "Same bean, different cup. Your goal tells the engine what to chase — it shifts the grind, water temperature, bloom time and agitation to steer the extraction toward the flavours you actually want.":"نفس البن، فنجان مختلف. هدفك يخبر المحرّك بما يطارده — فيغيّر الطحن وحرارة الماء وزمن الإزهار والتحريك ليوجّه الاستخلاص نحو النكهات التي تريدها فعلاً.",
+  "Distinct, separated flavours — tea-like and delicate. Coarser grind, gentler pours, faster drawdown.":"نكهات واضحة ومنفصلة — شبيهة بالشاي ورقيقة. طحن أخشن وصبّ ألطف وتصفية أسرع.",
+  "Round, caramel-forward sweetness. Slightly finer grind and longer contact to develop the sugars.":"حلاوة دائرية بطابع الكراميل. طحن أنعم قليلاً وتلامس أطول لتطوير السكريات.",
+  "A bit of everything, nothing dominating. The safe default for a bean you don't know yet.":"القليل من كل شيء دون طغيان. الخيار الآمن لبنّ لا تعرفه بعد.",
+  "Heavy, syrupy mouthfeel — chocolate and weight. Finer grind, more agitation, longer brew.":"قوام ثقيل وكثيف — شوكولاتة ووزن. طحن أنعم وتحريك أكثر وتحضير أطول.",
+  "Bright and juicy — lifts the citrus and fruit acids. Cooler water and a lighter touch.":"مشرقة وعصيرية — تُبرز حموضة الحمضيات والفواكه. ماء أبرد ولمسة أخف.",
+};
+const t=s=>(LANG==="ar"&&typeof s==="string")?(AR[s]??s):s;
 
 // ── DATA ─────────────────────────────────────────────────────────
 const BREWERS = ["Hario V60","Kalita Wave","April Brewer","Origami Dripper","Hoop by Ceado","Chemex","Orea Brewer","Fellow Stagg [X]","Sibarist FLAT","Melodrip","Tricolate","Other"];
@@ -23,10 +68,53 @@ const FILTERS = {
   "Tricolate":["Tricolate Paper Filter"],
   "Other":["Paper (White)","Paper (Natural)","Metal / Reusable","Cloth"],
 };
-const PROCESSES = ["Washed","Natural","Honey","Yellow Honey","Red Honey","Black Honey","Honey Fruit Fermented","Anaerobic Natural","Anaerobic Washed","Anaerobic with Fruits","Co-Fermented","Flavor Infusion","Carbonic Maceration","Nitrogen Infusion","Wet-Hulled (Giling Basah)","Double Fermented","Extended Fermentation","Experimental / Other"];
+const PROCESSES = ["Washed","Natural","Honey","Yellow Honey","Red Honey","Black Honey","Honey Fruit Fermented","Anaerobic Natural","Anaerobic Washed","Anaerobic with Fruits","Co-Fermented","Flavor Infusion","Carbonic Maceration","Thermal Shock","Koji Fermented","Nitrogen Infusion","Wet-Hulled (Giling Basah)","Double Fermented","Extended Fermentation","Experimental / Other"];
 const ROASTS   = ["Light","Light-Med","Medium","Med-Dark","Dark"];
 const GOALS    = ["Clarity","Sweetness","Balanced","Body","Acidity"];
-const GOAL_DESC= {Clarity:"High note separation — floral, tea-like, lower TDS",Sweetness:"Round sweetness, caramelised sugars",Balanced:"Even, well-rounded — the default",Body:"Syrupy, chocolate-heavy, dense mouthfeel",Acidity:"Brighter — lifts malic & phosphoric acids"};
+
+// ── GRINDER DATABASE (community-calibrated, linear micron models) ─
+const odeMicrons=s=>Math.round(250+(s-1)*85);
+const GRINDERS=[
+  {id:"Fellow Ode Gen 2",  from:m=>Math.max(1,Math.min(11,Math.round((1+(m-250)/85)*10)/10)), fmt:v=>v.toFixed(1),               scale:"dial 1–11"},
+  {id:"Comandante C40",    from:m=>Math.max(10,Math.min(40,Math.round(m/30))),                 fmt:v=>v+" clicks",                scale:"clicks from zero"},
+  {id:"1Zpresso ZP6",      from:m=>Math.max(8,Math.min(55,Math.round((m-200)/12.5))),          fmt:v=>Math.floor(v/10)+"."+(v%10), scale:"rotations.clicks"},
+  {id:"1Zpresso K-Ultra",  from:m=>Math.max(40,Math.min(110,Math.round(m/8.2))),               fmt:v=>Math.floor(v/10)+"."+(v%10), scale:"numbers.clicks"},
+  {id:"Timemore C3",       from:m=>Math.max(8,Math.min(30,Math.round((m-100)/28))),            fmt:v=>v+" clicks",                scale:"clicks from zero"},
+  {id:"Timemore Sculptor", from:m=>Math.max(30,Math.min(100,Math.round(m/9))),                 fmt:v=>String(v),                  scale:"dial"},
+  {id:"DF64",              from:m=>Math.max(20,Math.min(90,Math.round(m/10.5))),               fmt:v=>String(v),                  scale:"dial"},
+  {id:"EK43",              from:m=>Math.max(1,Math.min(11,Math.round((m/90)*2)/2)),            fmt:v=>v.toFixed(1),               scale:"dial"},
+  {id:"Other / Microns",   from:m=>m,                                                          fmt:v=>v+" µm",                    scale:"target microns"},
+];
+const grinderOut=(gid,odeSetting)=>{const m=odeMicrons(odeSetting);const g=GRINDERS.find(x=>x.id===gid)||GRINDERS[0];return {name:g.id,display:g.fmt(g.from(m)),microns:m,scale:g.scale};};
+
+// ── XBLOOM DRIPPER DATABASE (grind offsets on the 1–80 scale) ────
+const XDRIPPERS=[
+  {id:"Omni",            grind:0,  note:"xBloom's fast flat-bottom — the baseline"},
+  {id:"Hario V60",       grind:-2, note:"fast cone — grind finer so it doesn't race"},
+  {id:"Kalita Wave",     grind:1,  note:"restricted flat bed — slightly coarser"},
+  {id:"Origami (cone)",  grind:-2, note:"with a cone filter it brews like a V60"},
+  {id:"April Brewer",    grind:1,  note:"gentle flat bed — slightly coarser"},
+  {id:"Orea",            grind:0,  note:"fast flat — behaves close to the Omni"},
+  {id:"Timemore B75",    grind:0,  note:"Crystal Eye flat-bottom — fast, even and forgiving, close to the Omni"},
+];
+
+// ── XBLOOM FILTER DATABASE (researched flow + rinse behaviour) ───
+const XFILTERS=[
+  {id:"xBloom Standard",        rinse:true,  note:"the stock flat-bottom paper — rinse it first or you'll taste the paper"},
+  {id:"xBloom Premium (flat)",  rinse:false, note:"thick food-grade paper, pleated for even flow — taste-neutral, no rinsing needed"},
+  {id:"xBloom Premium Conical", rinse:false, note:"the no-rinse premium paper cut for cone drippers (V60 / Origami)"},
+  {id:"Hario V60 02",           rinse:true,  note:"classic fast cone paper — rinse to kill paper taste and preheat the cone"},
+  {id:"Kalita Wave 185",        rinse:true,  note:"the wave shape keeps the bed flat and slows flow slightly — rinse gently so it holds its ridges"},
+  {id:"Cafec Abaca",            rinse:true,  note:"abaca fibre keeps draining fast even late in the brew — quick rinse"},
+  {id:"Sibarist Fast",          rinse:true,  note:"ultra-fast specialty paper — drawdown speeds up noticeably, expect a brighter, lighter cup"},
+];
+const GOAL_DESC= {
+  Clarity:"Distinct, separated flavours — tea-like and delicate. Coarser grind, gentler pours, faster drawdown.",
+  Sweetness:"Round, caramel-forward sweetness. Slightly finer grind and longer contact to develop the sugars.",
+  Balanced:"A bit of everything, nothing dominating. The safe default for a bean you don't know yet.",
+  Body:"Heavy, syrupy mouthfeel — chocolate and weight. Finer grind, more agitation, longer brew.",
+  Acidity:"Bright and juicy — lifts the citrus and fruit acids. Cooler water and a lighter touch.",
+};
 const NOTE_CHIPS=["Peach","Berry","Floral","Citrus","Chocolate","Caramel","Jasmine","Wine","Tropical","Nuts","Vanilla","Honey","Earthy","Stone Fruit","Blackcurrant","Tobacco"];
 const ORIGIN_CHIPS=["Ethiopia","Kenya","Colombia","Brazil","Panama","Guatemala","Rwanda","Yemen","Indonesia","Costa Rica"];
 const VARIETY_CHIPS=["Geisha","Pink Bourbon","SL28","Bourbon","Caturra","Typica","Pacamara","Castillo","Wush Wush","Heirloom"];
@@ -65,7 +153,7 @@ function processClass(p){
     "Honey":"honey","Yellow Honey":"honey","Red Honey":"honey","Black Honey":"honey",
     "Honey Fruit Fermented":"anaerobic","Anaerobic Natural":"anaerobic","Anaerobic Washed":"anaerobic","Anaerobic with Fruits":"anaerobic",
     "Co-Fermented":"coferment","Flavor Infusion":"coferment","Experimental / Other":"coferment",
-    "Carbonic Maceration":"carbonic","Nitrogen Infusion":"nitrogen",
+    "Carbonic Maceration":"carbonic","Thermal Shock":"anaerobic","Koji Fermented":"extended","Nitrogen Infusion":"nitrogen",
     "Wet-Hulled (Giling Basah)":"wethulled","Double Fermented":"extended","Extended Fermentation":"extended",
   })[p]||"washed";
 }
@@ -150,8 +238,10 @@ function calcGrindX(process,roast,altitude,isIced,d,goal,adj){
   let g=41+ri(roast)*2+({washed:0,honey:2,natural:4,fermented:6}[pc(process)]||0)+(al>1800?-3:al<1200?3:0)-(isIced?4:0)+roastGrindX(d)+goalGrindX(goal)+((adj&&adj.x)||0);
   return clamp(Math.round(g),20,72);
 }
-function xbloomMicrons(s){ return Math.round(180+s*10.9); }
-function grindZone(s){ if(s<=15) return "Espresso"; if(s<=29) return "AeroPress"; if(s<=54) return "Pour Over / Filter"; if(s<=69) return "Coarse Filter"; return "French Press / Cold Brew"; }
+// xBloom scale: 180µm at 0 → 1048µm at 80, equal 10.85µm steps (official chart)
+function xbloomMicrons(s){ return Math.round(180+s*10.85); }
+// Zones per the official chart: Espresso 1-15, AeroPress 15-40, Pour Over 30-70, Cold Brew/French Press 55-80
+function grindZone(s){ if(s<=15) return "Espresso"; if(s<30) return "AeroPress"; if(s<=40) return "AeroPress / Pour Over"; if(s<55) return "Pour Over"; if(s<=70) return "Pour Over / French Press"; return "Cold Brew / French Press"; }
 function calcTemp(process,roast,altitude,isIced,d,adj){
   const base={washed:94,natural:91,honey:93,fermented:89}[pc(process)];
   const al=alt(altitude);
@@ -188,33 +278,66 @@ function calcPours(brewer,dose,hotWater,bloomWater,goal){
   const p1=Math.round(rem*0.38),p2=Math.round(rem*0.32),p3=rem-p1-p2;
   return[{n:1,water:p1,flow:"3-4 g/s",duration:30,total:bloomWater+p1,notes:"Slow spiral from centre"},{n:2,water:p2,flow:"3-4 g/s",duration:24,total:bloomWater+p1+p2,notes:goal==="Clarity"?"Gentle spiral, low agitation":"Continue spiral to edge"},{n:3,water:p3,flow:"3-4 g/s",duration:18,total:hotWater,notes:"Final centre pour"}];
 }
-function calcXPours(dose,totalVol,temp,process,goal,bloomMult){
+function calcXPours(dose,totalVol,temp,process,goal,bloomMult,bloomSec){
   const bloomVol=Math.round(dose*(bloomMult||2.5)),rem=totalVol-bloomVol;
+  const bs=bloomSec||45;
   const cat=pc(process);
   let fr=Math.round((cat==="washed"?3.1:3.3+goalContact(goal))*10)/10;
   const pt=cat==="fermented"?"Circular":"Spiral";
   const agAfter=(cat==="fermented"||cat==="natural"||goal==="Body");
   if(rem<160){
     const p1=Math.round(rem*0.55);
-    return[{n:1,volume:bloomVol,temperature:temp,flowRate:3.0,pause:40,pourType:"Spiral",agitationBefore:false,agitationAfter:agAfter,notes:"Bloom"},{n:2,volume:p1,temperature:temp,flowRate:fr,pause:12,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"Main pour"},{n:3,volume:rem-p1,temperature:temp,flowRate:fr,pause:0,pourType:"Centered",agitationBefore:false,agitationAfter:false,notes:"Final pour"}];
+    return[{n:1,volume:bloomVol,temperature:temp,flowRate:3.0,pause:bs,pourType:"Spiral",agitationBefore:false,agitationAfter:agAfter,notes:"Bloom"},{n:2,volume:p1,temperature:temp,flowRate:fr,pause:12,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"Main pour"},{n:3,volume:rem-p1,temperature:temp,flowRate:fr,pause:0,pourType:"Centered",agitationBefore:false,agitationAfter:false,notes:"Final pour"}];
   }
   const p1=Math.round(rem*0.40),p2=Math.round(rem*0.35),p3=rem-p1-p2;
-  return[{n:1,volume:bloomVol,temperature:temp,flowRate:3.0,pause:40,pourType:"Spiral",agitationBefore:false,agitationAfter:agAfter,notes:"Bloom"},{n:2,volume:p1,temperature:temp,flowRate:fr,pause:15,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"First pour"},{n:3,volume:p2,temperature:temp,flowRate:fr,pause:10,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"Second pour"},{n:4,volume:p3,temperature:temp,flowRate:fr,pause:0,pourType:"Centered",agitationBefore:false,agitationAfter:false,notes:"Final pour"}];
+  return[{n:1,volume:bloomVol,temperature:temp,flowRate:3.0,pause:bs,pourType:"Spiral",agitationBefore:false,agitationAfter:agAfter,notes:"Bloom"},{n:2,volume:p1,temperature:temp,flowRate:fr,pause:15,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"First pour"},{n:3,volume:p2,temperature:temp,flowRate:fr,pause:10,pourType:pt,agitationBefore:false,agitationAfter:false,notes:"Second pour"},{n:4,volume:p3,temperature:temp,flowRate:fr,pause:0,pourType:"Centered",agitationBefore:false,agitationAfter:false,notes:"Final pour"}];
 }
-function flavorNote(process,roast,altitude){
-  const cat=pc(process),a=alt(altitude),r=ri(roast);
-  if(cat==="washed") return r<=1?(a>1700?"High clarity — floral, citrus, and stone fruit with vibrant acidity.":"Clean and bright with mild fruit sweetness and balanced acidity."):"Soft chocolate, caramel, and nutty notes.";
-  if(cat==="natural") return r<=1?"Rich and fruit-forward — berry, tropical fruit, and chocolate with a full round body.":"Deep sweetness with dark fruit, chocolate, and a syrupy body.";
-  if(cat==="honey") return r<=1?"Stone fruit, brown sugar, and light florals with a smooth medium body.":"Caramel, dried fruit, and a silky body.";
-  return "Complex and layered — wine-like, tropical, or fruit-candy notes. Treat it with care.";
+function flavorNote(form,isIced,goal){
+  const cat=pc(form.process),a=alt(form.altitude),r=ri(form.roast);
+  const base=
+    cat==="washed"?(r<=1?(a>1700?"high clarity — floral, citrus and stone fruit riding a vibrant, sparkling acidity":"a clean, bright cup with mild fruit sweetness and balanced acidity"):"soft chocolate, caramel and toasted nuts with gentle acidity"):
+    cat==="natural"?(r<=1?"a fruit-forward cup — berries, tropical fruit and chocolate over a full round body":"deep dark-fruit sweetness, chocolate and a syrupy body"):
+    cat==="honey"?(r<=1?"stone fruit, brown sugar and light florals on a smooth medium body":"caramel, dried fruit and a silky body"):
+    "a wild, layered cup — wine-like, tropical, fruit-candy notes that keep shifting as it cools";
+  const twist={
+    Clarity:"Dialled for clarity, so the high notes should ring separate and tea-like rather than blending together.",
+    Sweetness:"Dialled for sweetness — the mid-tones should round out and turn caramel as the cup cools a little.",
+    Body:"Dialled for body — expect it heavier and denser, more cocoa than sparkle.",
+    Acidity:"Dialled bright — the acids lead, juicy and citric from the first sip.",
+    Balanced:"Dialled for balance — nothing should dominate; an even, complete cup.",
+  }[goal||"Balanced"];
+  const bagNotes=[form.notes,...(form.noteChips||[])].filter(Boolean).join(", ");
+  const noteLine=bagNotes?" The roaster promises "+bagNotes.toLowerCase()+" — listen for those around the second sip.":"";
+  const iceLine=isIced?" Over ice the aromatics tighten up: more snap, less perfume.":"";
+  return "Expect "+base+". "+twist+noteLine+iceLine;
 }
+
+// ── COFFEE FACTS (one per recipe, just for fun) ──────────────────
+const COFFEE_FACTS=[
+  "A coffee bean isn't a bean — it's the seed of a cherry. When only one seed grows instead of two, you get a rounder 'peaberry'.",
+  "Roasting barely changes caffeine. Light and dark roasts carry nearly the same — dark just tastes stronger.",
+  "Ethiopia is coffee's birthplace. Legend credits a goat herder named Kaldi, who noticed his goats dancing after eating the cherries.",
+  "A single espresso has less caffeine than a mug of filter coffee — concentration isn't quantity.",
+  "The bloom exists because roasting traps CO2 inside the bean. The fresher the coffee, the bigger the bubble dome.",
+  "Researchers have identified over 1,000 aroma compounds in roasted coffee — more than in wine.",
+  "Finland drinks more coffee per person than any other country — roughly four cups a day.",
+  "Decaf isn't caffeine-free. A cup still carries about 2–5 mg of caffeine.",
+  "Hot water pulls acids first, then sugars, then bitter compounds — every recipe is really just choosing when to stop.",
+  "Coffee was controversial enough to be banned in Mecca in 1511 and attacked in a London women's petition in 1674.",
+  "Instant coffee (1901) is older than the espresso machine (1906).",
+  "Grind size is measured in microns — a human hair is about 70µm, your pour-over grounds are about ten times that.",
+  "The world record espresso shot was pulled from beans aged over 20 years — but for pour-over, 10–21 days off roast is the sweet spot.",
+  "Arabica grows best above 1,000m — altitude slows the cherry's ripening, packing in denser, sweeter sugars.",
+];
+const pickFact=()=>COFFEE_FACTS[Math.floor(Math.random()*COFFEE_FACTS.length)];
+
 function brewmasterNote(process,roast,altitude,isIced,d,goal){
   const cat=pc(process),a=alt(altitude),p=roastPhase(d);
-  let s="Thirty years on the bar: ";
-  if(cat==="washed") s+="a clean washed lot rewards patience. Keep the kettle moving in slow circles, never let the bed go dry.";
-  else if(cat==="natural") s+="naturals carry huge fruit but muddy fast if you bully them. Pour gently, protect the bed.";
-  else if(cat==="honey") s+="honey sits between clean and fruity. A touch below boiling keeps the sugars round.";
-  else s+="fermented lots are wild — they extract fast and turn boozy if you rush. A hair finer, a couple degrees cooler, respect the bloom.";
+  let s="";
+  if(cat==="washed") s+="A clean washed lot rewards patience. Keep the kettle moving in slow circles, never let the bed go dry.";
+  else if(cat==="natural") s+="Naturals carry huge fruit but muddy fast if you bully them. Pour gently, protect the bed.";
+  else if(cat==="honey") s+="Honey process sits between clean and fruity. A touch below boiling keeps the sugars round.";
+  else s+="Fermented lots are wild — they extract fast and turn boozy if you rush. A hair finer, a couple degrees cooler, respect the bloom.";
   if(p==="fresh") s+=" These are still gassing off — I opened the grind and stretched the bloom. No extra heat on fresh beans.";
   if(p==="rested") s+=" Past the gassy stage, so I tightened the grind and added a degree.";
   if(a>1800) s+=" High-grown and dense — a degree hotter opens it.";
@@ -278,7 +401,7 @@ function calculateManual(form,adj){
   const te=tempEngine(form,isIced,adj);
   const grind=calcGrindOde(form.brewer,form.roast,form.process,isIced,d,goal,adj);
   const bd=bloomTime(form.process,d,goal,adj);
-  return {grindSize:grind,temperature:te.temp,tempLo:te.lo,tempHi:te.hi,tempReason:te.reason,tip:te.tip,assumed:te.assumed,totalWater:hotWater,iceGrams,coffeeDose:dose,ratio:"1:"+ratio,bloomWater,bloomDuration:bd,agitation:goalAgi(goal),pours:calcPours(form.brewer,dose,hotWater,bloomWater,goal),brewTime:(bt(form.brewer)==="chemex"?"4:00-5:00":bt(form.brewer)==="flat"?"3:30-4:30":hotWater<200?"2:30-3:00":"3:00-3:30"),brewmaster:brewmasterNote(form.process,form.roast,form.altitude,isIced,d,goal),flavor:flavorNote(form.process,form.roast,form.altitude)};
+  return {grindSize:grind,grinderId:form.grinder||"Fellow Ode Gen 2",temperature:te.temp,tempLo:te.lo,tempHi:te.hi,tempReason:te.reason,tip:te.tip,assumed:te.assumed,totalWater:hotWater,iceGrams,coffeeDose:dose,ratio:"1:"+ratio,bloomWater,bloomDuration:bd,agitation:goalAgi(goal),pours:calcPours(form.brewer,dose,hotWater,bloomWater,goal),brewTime:(bt(form.brewer)==="chemex"?"4:00-5:00":bt(form.brewer)==="flat"?"3:30-4:30":hotWater<200?"2:30-3:00":"3:00-3:30"),brewmaster:brewmasterNote(form.process,form.roast,form.altitude,isIced,d,goal),flavor:flavorNote(form,isIced,goal),fact:pickFact()};
 }
 function calculateXbloom(form,adj){
   const dose=parseFloat(form.xDose)||18;
@@ -292,22 +415,30 @@ function calculateXbloom(form,adj){
       hotWater=Math.max(round5(dose*3),totalTarget-iceGrams);
       machineRatio=roundHalf(hotWater/dose);
     } else {
-      machineRatio=roundHalf(ratio*0.60);   // spec: 60% hot water, 40% ice
+      // ice fraction depends on process: Natural ~42%, Fermented ~38%, others ~40% of total
+      const iceFrac=pc(form.process)==="natural"?0.42:pc(form.process)==="fermented"?0.38:0.40;
+      machineRatio=roundHalf(ratio*(1-iceFrac));
       hotWater=Math.round(dose*machineRatio);
       iceGrams=round5(totalTarget-hotWater);
     }
   }
   const te=tempEngine(form,isIced,adj);
   const temp=te.temp;
-  const grind=calcGrindX(form.process,form.roast,form.altitude,isIced,d,goal,adj);
-  const rpm=calcRPM(form.process,form.roast,goal);
-  const dripper=dose<=18?"Omni":"Other";
-  // Omni app caps at 18g. For >18g you physically use the Omni but enter 18g in-app at an adjusted ratio.
+  // Omni caps at 18g — at or under 18g the stock Omni is used; over 18g the user picks another dripper.
   const over18=dose>18;
+  const xd=over18?(XDRIPPERS.find(z=>z.id===form.xDripper)||XDRIPPERS[0]):XDRIPPERS[0];
+  const g0=calcGrindX(form.process,form.roast,form.altitude,isIced,d,goal,adj);
+  const grind=clamp(g0+xd.grind,20,72);
+  const rpm=calcRPM(form.process,form.roast,goal);
+  const dripper=xd.id;
+  const filter=XFILTERS.find(f=>f.id===form.xFilter)||null;
+  const needsOther=over18||dripper!=="Omni";
   const appDose=over18?18:dose;
   const appRatio=over18?roundHalf(hotWater/18):machineRatio;
   const bloomMult=form.bloomRatio==="1:2"?2:3;
-  return {dripper,dose,over18,appDose,appRatio,grindSize:grind,grindMicrons:xbloomMicrons(grind),grindZoneLabel:grindZone(grind),rpm,ratio:"1:"+machineRatio,targetRatio:form.xRatio,totalVolume:hotWater,iceGrams,totalWithIce:totalTarget,bloomRatio:form.bloomRatio||"1:3",temperature:temp,tempLo:te.lo,tempHi:te.hi,tempReason:te.reason,tip:te.tip,assumed:te.assumed,agitation:goalAgi(goal),pours:calcXPours(dose,hotWater,temp,form.process,goal,bloomMult),brewTime:"3:00-3:30",isIced,brewmaster:brewmasterNote(form.process,form.roast,form.altitude,isIced,d,goal),flavor:flavorNote(form.process,form.roast,form.altitude)};
+  const bd=bloomTime(form.process,d,goal,adj);
+  const cupOut=Math.round((isIced?totalTarget:hotWater)-dose*2.1);
+  return {dripper,filter,needsOther,dose,over18,appDose,appRatio,grindSize:grind,grindMicrons:xbloomMicrons(grind),grindZoneLabel:grindZone(grind),rpm,ratio:"1:"+machineRatio,targetRatio:form.xRatio,totalVolume:hotWater,iceGrams,totalWithIce:totalTarget,cupOut,bloomRatio:form.bloomRatio||"1:3",bloomDuration:bd,temperature:temp,tempLo:te.lo,tempHi:te.hi,tempReason:te.reason,tip:te.tip,assumed:te.assumed,agitation:goalAgi(goal),pours:calcXPours(dose,hotWater,temp,form.process,goal,bloomMult,bd),brewTime:"3:00-3:30",isIced,brewmaster:brewmasterNote(form.process,form.roast,form.altitude,isIced,d,goal),flavor:flavorNote(form,isIced,goal),fact:pickFact()};
 }
 
 // ── COFFEE DOCTOR ────────────────────────────────────────────────
@@ -328,7 +459,7 @@ const DOC_PROBS=[
 
 // ── RECIPE TEXT (for copy) ────────────────────────────────────────
 function recipeText(mode,form,r){
-  const L=["POUR DECISIONS — "+(form.beanName||"Recipe")];
+  const L=["CALIBRATED POURS — "+(form.beanName||"Recipe")];
   if(mode==="xbloom"){
     L.push("xBloom Studio"+(r.isIced?" · Iced":""));
     L.push("Dripper: "+r.dripper+" | Dose: "+r.dose+"g | Ratio: "+r.ratio+" ("+r.totalVolume+"ml)");
@@ -346,6 +477,7 @@ function recipeText(mode,form,r){
   }
   return L.join("\n");
 }
+
 
 // ── LOCALSTORAGE (works everywhere — Claude, browsers, Capacitor) ─
 const bkey=b=>"pd_dialin:"+(b||"x").toLowerCase().replace(/[^a-z0-9]/g,"_").slice(0,40);
@@ -383,19 +515,30 @@ function genInsights(recs){
   return insights;
 }
 
-// ── BREW TIMER helper ─────────────────────────────────────────────
-function buildSteps(result,mode){
-  if(mode==="manual"){
-    const s=[{label:"Bloom",action:"Pour "+result.bloomWater+"g",duration:result.bloomDuration,sub:"Saturate all grounds, let bloom fully"}];
-    (result.pours||[]).forEach(p=>{s.push({label:"Pour "+p.n,action:"Pour "+p.water+"g",duration:p.duration||20,sub:p.notes||""});});
-    return s;
-  }
-  return (result.pours||[]).map((p,i)=>({
-    label:i===0?"Bloom":"Pour "+i,
-    action:"Pour "+p.volume+"ml",
-    duration:Math.ceil(p.volume/(p.flowRate||3))+p.pause,
-    sub:p.flowRate+"ml/s, "+p.pause+"s pause, "+p.pourType,
-  }));
+// ── CALIBRATING TRANSITION (letters appear one by one) ───────────
+function Calibrating({onDone}){
+  const word=t("Calibrating");
+  const subs=[t("Reading the bean"),t("Balancing extraction"),t("Locking temperature")];
+  const [tick,setTick]=useState(0);
+  const doneRef=useRef(false);
+  useEffect(()=>{
+    let i=0;
+    const iv=setInterval(()=>{
+      i++; setTick(i);
+      if(i>=word.length+22&&!doneRef.current){ doneRef.current=true; clearInterval(iv); onDone(); }
+    },150);
+    return ()=>clearInterval(iv);
+  },[]);
+  const letters=Math.min(tick,word.length);
+  const dots=tick>word.length?(Math.floor((tick-word.length)/3)%4):0;
+  return <div className="anim" style={{maxWidth:600,margin:"0 auto",padding:"130px 22px 0",textAlign:"center"}}>
+    <div style={{fontFamily:FD,fontWeight:900,fontSize:30,color:C.ink,letterSpacing:"0.06em",textTransform:"uppercase",minHeight:40}}>
+      {word.slice(0,letters)}{".".repeat(dots)}<span style={{opacity:tick%2===0?1:0,color:C.accent}}>_</span>
+    </div>
+    <div style={{marginTop:28,display:"flex",flexDirection:"column",gap:10,minHeight:80}}>
+      {subs.map((s,j)=>tick>word.length+4+j*5&&<div key={j} className="anim" style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted}}>✓ {s}</div>)}
+    </div>
+  </div>;
 }
 
 function ProgressSteps({current}){
@@ -407,12 +550,12 @@ function ProgressSteps({current}){
         return(
           <div key={s} style={{display:"flex",alignItems:"center",flex:i<3?1:"none"}}>
             <div style={{display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
-              <div style={{width:20,height:20,background:act||done?"#0A0A0A":"#E4E0D6",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <span style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:8,color:act||done?"#FFFFFF":"#8C8A84"}}>{"0"+n}</span>
+              <div style={{width:20,height:20,borderRadius:7,background:act||done?C.ink:C.line,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:8,color:act||done?C.white:C.muted}}>{"0"+n}</span>
               </div>
-              <span style={{fontFamily:"'Inter',sans-serif",fontWeight:act?700:500,fontSize:9,color:act?"#0A0A0A":"#8C8A84",textTransform:"uppercase",letterSpacing:"0.08em"}}>{s}</span>
+              <span style={{fontFamily:"'Inter',sans-serif",fontWeight:act?700:500,fontSize:9,color:act?C.ink:C.muted,textTransform:"uppercase",letterSpacing:"0.08em"}}>{t(s)}</span>
             </div>
-            {i<3&&<div style={{flex:1,height:1.5,background:done?"#0A0A0A":"#E4E0D6",margin:"0 6px",minWidth:6}}/>}
+            {i<3&&<div style={{flex:1,height:1.5,background:done?C.ink:C.line,margin:"0 6px",minWidth:6}}/>}
           </div>
         );
       })}
@@ -422,7 +565,7 @@ function ProgressSteps({current}){
 
 // ── CSS ──────────────────────────────────────────────────────────
 const CSS=(
-  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');"+
+  "@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Inter:wght@400;500;600;700;800;900&display=swap');"+
   "*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}"+
   "html,body{background:#FAF9F5;min-height:100vh;-webkit-font-smoothing:antialiased}"+
   "input::placeholder{color:#C0BDB7;font-family:'Inter',sans-serif;font-weight:500}"+
@@ -430,9 +573,6 @@ const CSS=(
   "input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}"+
   "input[type=date]{font-family:'Inter',sans-serif;font-weight:600;color:#0A0A0A}"+
   "select option{background:#fff;color:#0A0A0A}"+
-  "input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:#E4E0D6;border-radius:0;outline:none;cursor:pointer}"+
-  "input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:0;background:#0A0A0A;cursor:pointer}"+
-  "input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:0;background:#0A0A0A;cursor:pointer;border:none}"+
   "@keyframes b1{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}20%{transform:translate(-42%,-58%) scale(1.12) rotate(25deg)}40%{transform:translate(-56%,-42%) scale(0.9) rotate(-18deg)}60%{transform:translate(-44%,-56%) scale(1.08) rotate(35deg)}80%{transform:translate(-54%,-44%) scale(0.95) rotate(-12deg)}}"+
   "@keyframes b2{0%,100%{transform:translate(-30%,-65%) scale(0.82)}33%{transform:translate(-70%,-35%) scale(1.05)}66%{transform:translate(-50%,-50%) scale(0.9)}}"+
   "@keyframes b3{0%,100%{transform:translate(-75%,-30%) scale(0.68)}50%{transform:translate(-25%,-70%) scale(0.88)}}"+
@@ -447,17 +587,34 @@ function Blobs(){
   const b={position:"absolute",borderRadius:"50%",pointerEvents:"none"};
   return(
     <div style={{position:"fixed",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
-      <div style={{...b,top:"35%",left:"50%",width:580,height:580,background:"radial-gradient(circle,rgba(140,110,210,0.44) 0%,rgba(107,95,168,0.25) 40%,transparent 70%)",filter:"blur(72px)",animation:"b1 15s ease-in-out infinite"}}/>
-      <div style={{...b,top:"20%",left:"70%",width:360,height:360,background:"radial-gradient(circle,rgba(255,80,160,0.36) 0%,rgba(220,60,140,0.2) 45%,transparent 70%)",filter:"blur(60px)",animation:"b2 11s ease-in-out infinite"}}/>
-      <div style={{...b,top:"60%",left:"20%",width:320,height:320,background:"radial-gradient(circle,rgba(200,50,180,0.32) 0%,rgba(170,40,160,0.18) 45%,transparent 70%)",filter:"blur(56px)",animation:"b3 9s ease-in-out infinite"}}/>
-      <div style={{...b,top:"15%",left:"25%",width:300,height:300,background:"radial-gradient(circle,rgba(255,200,50,0.30) 0%,rgba(230,170,30,0.16) 45%,transparent 70%)",filter:"blur(58px)",animation:"b4 13s ease-in-out infinite"}}/>
-      <div style={{...b,top:"70%",left:"68%",width:260,height:260,background:"radial-gradient(circle,rgba(80,130,240,0.28) 0%,rgba(60,110,220,0.14) 45%,transparent 70%)",filter:"blur(52px)",animation:"b5 8s ease-in-out infinite"}}/>
+      <div style={{...b,top:"35%",left:"50%",width:580,height:580,background:"radial-gradient(circle,rgba(140,110,210,0.50) 0%,rgba(107,95,168,0.31) 40%,transparent 70%)",filter:"blur(72px)",animation:"b1 15s ease-in-out infinite"}}/>
+      <div style={{...b,top:"20%",left:"70%",width:360,height:360,background:"radial-gradient(circle,rgba(255,80,160,0.42) 0%,rgba(220,60,140,0.26) 45%,transparent 70%)",filter:"blur(60px)",animation:"b2 11s ease-in-out infinite"}}/>
+      <div style={{...b,top:"60%",left:"20%",width:320,height:320,background:"radial-gradient(circle,rgba(200,50,180,0.38) 0%,rgba(170,40,160,0.24) 45%,transparent 70%)",filter:"blur(56px)",animation:"b3 9s ease-in-out infinite"}}/>
+      <div style={{...b,top:"15%",left:"25%",width:300,height:300,background:"radial-gradient(circle,rgba(255,200,50,0.36) 0%,rgba(230,170,30,0.22) 45%,transparent 70%)",filter:"blur(58px)",animation:"b4 13s ease-in-out infinite"}}/>
+      <div style={{...b,top:"70%",left:"68%",width:260,height:260,background:"radial-gradient(circle,rgba(80,130,240,0.34) 0%,rgba(60,110,220,0.20) 45%,transparent 70%)",filter:"blur(52px)",animation:"b5 8s ease-in-out infinite"}}/>
     </div>
   );
 }
 
+// ── LIQUID GLASS ──────────────────────────────────────────────────
+const glass=(r=24,o={})=>({border:"1px solid rgba(255,255,255,0.7)",borderRadius:r,
+  backdropFilter:"blur(28px) saturate(180%)",WebkitBackdropFilter:"blur(28px) saturate(180%)",
+  boxShadow:"0 12px 36px rgba(94,68,180,0.16), inset 0 1px 0 rgba(255,255,255,0.85)",overflow:"hidden",...o});
+const glassThin=(r=16,o={})=>({border:"1px solid rgba(150,130,210,0.28)",borderRadius:r,
+  backdropFilter:"blur(14px) saturate(160%)",WebkitBackdropFilter:"blur(14px) saturate(160%)",
+  boxShadow:"inset 0 1px 0 rgba(255,255,255,0.55)",...o});
+const glassAccent=(border,r=20,o={})=>({border:"1.5px solid "+border,borderRadius:r,
+  backdropFilter:"blur(24px) saturate(170%)",WebkitBackdropFilter:"blur(24px) saturate(170%)",
+  boxShadow:"0 8px 24px rgba(123,47,190,0.14), inset 0 1px 0 rgba(255,255,255,0.7)",...o});
+
 // ── UI ATOMS ──────────────────────────────────────────────────────
-function Lbl({c}){ return <div style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted,marginBottom:8}}>{c}</div>; }
+function Lbl({c,req,hint}){
+  return <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:8}}>
+    <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted}}>{t(c)}</span>
+    {req&&<span style={{fontFamily:F,fontWeight:700,fontSize:8,letterSpacing:"0.08em",textTransform:"uppercase",color:C.accent,background:"rgba(123,47,190,0.08)",border:"1px solid rgba(123,47,190,0.30)",borderRadius:999,padding:"2px 7px",lineHeight:1.4}}>{t("required")}</span>}
+    {hint&&<span style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,textTransform:"none",letterSpacing:0}}>{t(hint)}</span>}
+  </div>;
+}
 function TIn({value,onChange,placeholder,type}){
   const [f,sf]=useState(false);
   return <input value={value} onChange={onChange} placeholder={placeholder} type={type||"text"}
@@ -468,70 +625,92 @@ function Sel({value,onChange,options,placeholder}){
   return <div style={{position:"relative"}}>
     <select value={value} onChange={onChange}
       style={{width:"100%",background:"transparent",border:"none",borderBottom:"2px solid "+(value?C.ink:C.line),padding:"9px 20px 9px 0",fontFamily:F,fontWeight:600,fontSize:15,color:value?C.ink:C.muted,outline:"none",WebkitAppearance:"none",appearance:"none",cursor:"pointer"}}>
-      <option value="" disabled>{placeholder}</option>
+      <option value="" disabled>{t(placeholder)}</option>
       {options.map(o=><option key={o} value={o} style={{color:C.ink,background:C.card}}>{o}</option>)}
     </select>
     <span style={{position:"absolute",right:2,top:"50%",transform:"translateY(-50%)",color:C.ink,fontSize:11,pointerEvents:"none"}}>▾</span>
   </div>;
 }
 function Seg({options,value,onChange,small}){
-  return <div style={{display:"flex",border:"2px solid "+C.ink}}>
-    {options.map((o,i)=>(
-      <button key={o} onClick={()=>onChange(o)}
-        style={{flex:1,padding:small?"9px 4px":"11px 6px",background:value===o?C.ink:"transparent",border:"none",borderLeft:i>0?"2px solid "+C.ink:"none",fontFamily:F,fontWeight:700,fontSize:small?10:11,letterSpacing:"0.04em",textTransform:"uppercase",color:value===o?C.white:C.stone,cursor:"pointer",transition:"all .12s"}}>
-        {o}
+  return <div style={{display:"flex",...glass(22)}}>
+    {options.map((o,i)=>{
+      const v=typeof o==="object"?o.value:o, l=typeof o==="object"?o.label:t(o);
+      return(
+      <button key={v} onClick={()=>onChange(v)}
+        style={{flex:1,padding:small?"9px 4px":"11px 6px",background:value===v?C.ink:"transparent",border:"none",borderLeft:i>0?"1px solid rgba(120,100,190,0.25)":"none",fontFamily:F,fontWeight:700,fontSize:small?10:11,letterSpacing:"0.04em",textTransform:"uppercase",color:value===v?C.white:C.stone,cursor:"pointer",transition:"all .12s"}}>
+        {l}
       </button>
-    ))}
+    );})}
   </div>;
 }
 function Pill({active,onClick,children}){
-  return <button onClick={onClick} style={{border:"2px solid "+(active?C.ink:C.line),background:active?C.ink:"transparent",padding:"7px 14px",fontFamily:F,fontWeight:600,fontSize:12,color:active?C.white:C.stone,cursor:"pointer",transition:"all .12s",whiteSpace:"nowrap"}}>{children}</button>;
+  return <button onClick={onClick} style={{border:"1px solid "+(active?"rgba(30,10,60,0.85)":"rgba(255,255,255,0.7)"),borderRadius:999,backdropFilter:"blur(16px) saturate(170%)",WebkitBackdropFilter:"blur(16px) saturate(170%)",background:active?C.ink:"rgba(255,255,255,0.45)",boxShadow:active?"0 6px 18px rgba(30,10,60,0.22)":"0 4px 14px rgba(94,68,180,0.10), inset 0 1px 0 rgba(255,255,255,0.8)",padding:"7px 14px",fontFamily:F,fontWeight:600,fontSize:12,color:active?C.white:C.stone,cursor:"pointer",transition:"all .12s",whiteSpace:"nowrap"}}>{children}</button>;
 }
-function BtnP({onClick,disabled,children}){ return <button onClick={onClick} disabled={disabled} style={{flex:2,padding:"15px",background:disabled?C.line:C.ink,border:"none",color:disabled?C.muted:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:disabled?"not-allowed":"pointer"}}>{children}</button>; }
-function BtnG({onClick,children}){ return <button onClick={onClick} style={{flex:1,padding:"15px",background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:600,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>{children}</button>; }
-function RangeField({label,value,min,max,step,unit,onChange}){
-  const v=parseFloat(value)||parseFloat(min)||0,isRatio=unit==="ratio";
+function BtnP({onClick,disabled,children}){ return <button onClick={onClick} disabled={disabled} style={{flex:2,padding:"15px",background:disabled?C.line:C.ink,border:"none",borderRadius:18,color:disabled?C.muted:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:disabled?"not-allowed":"pointer",boxShadow:disabled?"none":"0 10px 26px rgba(30,10,60,0.25)"}}>{typeof children==="string"?t(children):children}</button>; }
+function BtnG({onClick,children}){ return <button onClick={onClick} style={{flex:1,padding:"15px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:600,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>{typeof children==="string"?t(children):children}</button>; }
+function FillPill({label,value,min,max,step,unit,onChange,ariaLabel}){
+  const st=step||1;
+  const v=clamp(parseFloat(value)||parseFloat(min)||0,min,max),isRatio=unit==="ratio";
+  const pct=max>min?(v-min)/(max-min):0;
+  const ref=useRef(null),drag=useRef(false);
+  const snap=n=>String(Math.round(clamp(Math.round(n/st)*st,min,max)*10)/10);
+  const setFromX=x=>{
+    const r=ref.current.getBoundingClientRect();
+    const p=clamp((x-r.left)/r.width,0,1);
+    onChange(snap(min+p*(max-min)));
+  };
+  const down=e=>{drag.current=true;e.currentTarget.setPointerCapture(e.pointerId);setFromX(e.clientX);};
+  const move=e=>{if(drag.current)setFromX(e.clientX);};
+  const up=()=>{drag.current=false;};
+  const key=e=>{
+    if(e.key==="ArrowLeft"||e.key==="ArrowDown"){e.preventDefault();onChange(snap(v-st));}
+    else if(e.key==="ArrowRight"||e.key==="ArrowUp"){e.preventDefault();onChange(snap(v+st));}
+  };
   return <div style={{marginBottom:24}}>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
-      <Lbl c={label}/>
-      <span style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{isRatio?"1:"+v:v+(unit||"")}</span>
+    <div ref={ref} dir="ltr" role="slider" tabIndex={0} aria-label={ariaLabel||label} aria-valuemin={min} aria-valuemax={max} aria-valuenow={v}
+      onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onKeyDown={key}
+      style={{...glass(999),position:"relative",height:60,touchAction:"none",userSelect:"none",WebkitUserSelect:"none",cursor:"ew-resize",background:"rgba(255,255,255,0.30)",outline:"none"}}>
+      <div style={{position:"absolute",top:0,bottom:0,left:0,width:(pct*100)+"%",background:"linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.78))",borderRadius:999,boxShadow:"inset 0 1px 0 rgba(255,255,255,1), 1px 0 8px rgba(94,68,180,0.12)"}}/>
+      <div style={{position:"absolute",inset:0,display:"flex",justifyContent:"space-between",alignItems:"center",padding:"0 20px",pointerEvents:"none"}}>
+        <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.stone}}>{t(label)}</span>
+        <span style={{fontFamily:F,fontWeight:800,fontSize:20,color:C.ink,letterSpacing:"-0.02em"}}>{isRatio?"1:"+v:v+(unit||"")}</span>
+      </div>
     </div>
-    <input type="range" min={min} max={max} step={step||1} value={v} onChange={e=>onChange(e.target.value)}/>
-    <div style={{display:"flex",justifyContent:"space-between",marginTop:7}}>
+    <div dir="ltr" style={{display:"flex",justifyContent:"space-between",marginTop:6,padding:"0 6px"}}>
       <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{isRatio?"1:"+min:min+(unit||"")}</span>
       <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{isRatio?"1:"+max:max+(unit||"")}</span>
     </div>
   </div>;
 }
-function YieldBox({text}){ if(!text) return null; return <div style={{padding:"13px 16px",background:C.ink,marginBottom:22,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontFamily:F,fontWeight:600,fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:"0.12em",textTransform:"uppercase"}}>Yield Preview</span><span style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.white}}>{text}</span></div>; }
+function YieldBox({text}){ if(!text) return null; return <div style={{padding:"13px 16px",background:C.ink,borderRadius:18,marginBottom:22,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontFamily:F,fontWeight:600,fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:"0.12em",textTransform:"uppercase"}}>Yield Preview</span><span style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.white}}>{text}</span></div>; }
 function ProgressBar({progress}){
   const pct=clamp(progress,0,5),dialled=pct>=5;
-  return <div style={{border:"2px solid "+C.ink,padding:"14px 16px",marginBottom:14,background:dialled?C.ink:C.card}}>
+  return <div style={{...glass(24),padding:"14px 16px",marginBottom:14,background:dialled?C.ink:C.card}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
       <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:dialled?C.gold:C.muted}}>{dialled?"★ Dialled In":"Dial-In Progress"}</span>
       <span style={{fontFamily:F,fontWeight:700,fontSize:11,color:dialled?"rgba(255,255,255,0.7)":C.stone}}>{pct}/5</span>
     </div>
-    <div style={{display:"flex",gap:5}}>{[0,1,2,3,4].map(i=><div key={i} style={{flex:1,height:10,background:i<pct?(dialled?C.gold:C.accent):(dialled?"rgba(255,255,255,0.15)":C.line)}}/>)}</div>
+    <div style={{display:"flex",gap:5}}>{[0,1,2,3,4].map(i=><div key={i} style={{flex:1,height:10,borderRadius:4,background:i<pct?(dialled?C.gold:C.accent):(dialled?"rgba(255,255,255,0.15)":C.line)}}/>)}</div>
   </div>;
 }
 function BigN({val,top,bot,adj,onMinus,onPlus,adjustable}){
   return <div style={{textAlign:"center",flex:1,padding:"20px 4px"}}>
     <div style={{fontFamily:F,fontWeight:800,fontSize:27,color:C.ink,lineHeight:1,marginBottom:4,letterSpacing:"-0.02em"}}>{val}</div>
     {adjustable&&<div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:2}}>
-      <button onClick={onMinus} style={{width:26,height:26,background:"transparent",border:"1.5px solid "+C.line,color:C.stone,fontFamily:F,fontWeight:700,fontSize:14,cursor:"pointer",lineHeight:1}}>−</button>
+      <button onClick={onMinus} style={{width:26,height:26,background:"transparent",border:"1px solid rgba(150,130,210,0.4)",borderRadius:10,color:C.stone,fontFamily:F,fontWeight:700,fontSize:14,cursor:"pointer",lineHeight:1}}>−</button>
       {adj!==0&&<span style={{fontFamily:F,fontWeight:600,fontSize:9,color:C.accent,alignSelf:"center"}}>{adj>0?"+":""}{adj}</span>}
-      <button onClick={onPlus} style={{width:26,height:26,background:"transparent",border:"1.5px solid "+C.line,color:C.stone,fontFamily:F,fontWeight:700,fontSize:14,cursor:"pointer",lineHeight:1}}>+</button>
+      <button onClick={onPlus} style={{width:26,height:26,background:"transparent",border:"1px solid rgba(150,130,210,0.4)",borderRadius:10,color:C.stone,fontFamily:F,fontWeight:700,fontSize:14,cursor:"pointer",lineHeight:1}}>+</button>
     </div>}
-    <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.13em",textTransform:"uppercase",color:C.muted}}>{top}</div>
+    <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.13em",textTransform:"uppercase",color:C.muted}}>{t(top)}</div>
     {bot&&<div style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.accent,marginTop:2}}>{bot}</div>}
   </div>;
 }
-function SpecRow({label,value,sub}){ return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px",borderBottom:"1px solid "+C.line}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>{label}</span><div style={{textAlign:"right"}}><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{value}</span>{sub&&<span style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,marginLeft:8}}>{sub}</span>}</div></div>; }
-function ICard({label,children,dark}){ return <div style={{padding:"16px 18px",background:dark?C.ink:C.card,border:"2px solid "+C.ink,marginBottom:12}}>{label&&<div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:dark?"rgba(255,255,255,0.5)":C.muted,marginBottom:7}}>{label}</div>}<p style={{fontFamily:F,fontWeight:500,fontSize:13,color:dark?"rgba(255,255,255,0.92)":C.stone,lineHeight:1.7,margin:0}}>{children}</p></div>; }
+function SpecRow({label,value,sub}){ return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px",borderBottom:"1px solid "+C.line}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>{t(label)}</span><div style={{textAlign:"right"}}><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{value}</span>{sub&&<span style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,marginLeft:8}}>{sub}</span>}</div></div>; }
+function ICard({label,children,dark}){ return <div style={{padding:"16px 18px",background:dark?C.ink:C.card,...glass(24),marginBottom:12}}>{label&&<div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:dark?"rgba(255,255,255,0.5)":C.muted,marginBottom:7}}>{t(label)}</div>}<p style={{fontFamily:F,fontWeight:500,fontSize:13,color:dark?"rgba(255,255,255,0.92)":C.stone,lineHeight:1.7,margin:0}}>{children}</p></div>; }
 
 // ── POUR CARD (Xbloom style) ──────────────────────────────────────
 function PourCard({p,idx}){
-  return <div style={{border:"2px solid "+C.ink,marginBottom:10,background:C.card}}>
+  return <div style={{...glass(24),marginBottom:10,background:C.card}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:C.ink}}>
       <span style={{fontFamily:F,fontWeight:800,fontSize:12,color:C.white,letterSpacing:"0.08em",textTransform:"uppercase"}}>{idx===0?"Bloom":"Pour "+idx}</span>
       <span style={{fontFamily:F,fontWeight:900,fontSize:18,color:C.white}}>{p.volume}ml</span>
@@ -551,73 +730,14 @@ function PourCard({p,idx}){
   </div>;
 }
 
-// ── BREW TIMER ────────────────────────────────────────────────────
-function BrewTimer({steps,onClose}){
-  const [idx,setIdx]=useState(-1);
-  const [left,setLeft]=useState(0);
-  const [running,setRunning]=useState(false);
-  const ivRef=useRef(null);
-  const done=idx>=steps.length;
-  const mm=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
-
-  function startStep(i){
-    clearInterval(ivRef.current);
-    if(i>=steps.length){ setIdx(i); setRunning(false); return; }
-    setIdx(i); let t=steps[i].duration; setLeft(t); setRunning(true);
-    ivRef.current=setInterval(()=>{
-      t--; if(t<=0){ clearInterval(ivRef.current); setLeft(0); setTimeout(()=>startStep(i+1),1000); }
-      else setLeft(t);
-    },1000);
-  }
-  useEffect(()=>()=>clearInterval(ivRef.current),[]);
-
-  const cur=steps[idx]||null;
-  const nxt=steps[idx+1]||null;
-
-  return <div className="anim">
-    {idx===-1&&(
-      <>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:28,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em",marginBottom:24,lineHeight:1.05}}>Ready to brew?</div>
-        {steps.map((s,i)=><div key={i} style={{padding:"12px 16px",border:"2px solid "+C.line,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span style={{fontFamily:F,fontWeight:700,fontSize:13,color:C.ink}}>{s.label}</span>
-          <span style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.muted}}>{mm(s.duration)}</span>
-        </div>)}
-        <button onClick={()=>startStep(0)} style={{width:"100%",padding:"18px",background:C.ink,border:"none",color:C.white,fontFamily:F,fontWeight:800,fontSize:13,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",marginTop:16}}>Start Brewing →</button>
-      </>
-    )}
-    {idx>=0&&!done&&cur&&(
-      <div style={{textAlign:"center"}}>
-        <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.muted,letterSpacing:"0.16em",textTransform:"uppercase",marginBottom:8}}>Step {idx+1} of {steps.length}</div>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:22,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em",marginBottom:10}}>{cur.label}</div>
-        <div style={{fontFamily:F,fontWeight:700,fontSize:16,color:C.accent,marginBottom:20}}>{cur.action}</div>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:60,color:left<=10?C.accent2:C.ink,lineHeight:1,letterSpacing:"-0.04em",marginBottom:6}}>{mm(left)}</div>
-        {cur.sub&&<div style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.muted,marginBottom:24}}>{cur.sub}</div>}
-        <div style={{display:"flex",gap:10,marginTop:20}}>
-          <button onClick={()=>{clearInterval(ivRef.current);setRunning(false);}} style={{flex:1,padding:"13px",background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:700,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}>Pause</button>
-          {!running&&<button onClick={()=>startStep(idx)} style={{flex:1,padding:"13px",background:C.ink,border:"none",color:C.white,fontFamily:F,fontWeight:700,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}>Resume</button>}
-          <button onClick={()=>startStep(idx+1)} style={{flex:1,padding:"13px",background:"transparent",border:"2px solid "+C.line,color:C.stone,fontFamily:F,fontWeight:700,fontSize:11,textTransform:"uppercase",cursor:"pointer"}}>Skip →</button>
-        </div>
-        {nxt&&<div style={{padding:"10px 14px",background:C.line,marginTop:16}}><span style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.stone}}>Next: {nxt.label} — {nxt.action}</span></div>}
-      </div>
-    )}
-    {done&&(
-      <div style={{textAlign:"center",paddingTop:40}}>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:52,color:C.gold,marginBottom:12}}>★</div>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:28,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em",marginBottom:8}}>Enjoy your coffee.</div>
-        <button onClick={onClose} style={{marginTop:20,padding:"15px 32px",background:C.ink,border:"none",color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Done</button>
-      </div>
-    )}
-  </div>;
-}
-
 // ── SHARE CARD ────────────────────────────────────────────────────
 function ShareCard({mode,form,result}){
   const blobBg="linear-gradient(135deg,rgba(140,110,210,0.15) 0%,rgba(255,80,160,0.1) 40%,rgba(255,200,50,0.08) 70%,rgba(80,130,240,0.1) 100%)";
-  return <div style={{border:"2px solid "+C.ink,background:C.card,overflow:"hidden"}}>
+  return <div style={{...glass(24),background:C.card,overflow:"hidden"}}>
     <div style={{background:C.ink,padding:"20px 22px",display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
       <div>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:4}}>Pour Decisions</div>
-        <div style={{fontFamily:F,fontWeight:900,fontSize:22,color:C.white,textTransform:"uppercase",letterSpacing:"-0.02em"}}>{form.beanName||"My Recipe"}</div>
+        <div style={{fontFamily:FD,fontWeight:900,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:4}}>Calibrated Pours</div>
+        <div style={{fontFamily:FD,fontWeight:900,fontSize:22,color:C.white,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{form.beanName||"My Recipe"}</div>
         {form.origin&&<div style={{fontFamily:F,fontWeight:500,fontSize:12,color:"rgba(255,255,255,0.6)",marginTop:2}}>{form.origin}{form.region?" · "+form.region:""}</div>}
       </div>
       <div style={{textAlign:"right"}}>
@@ -629,7 +749,7 @@ function ShareCard({mode,form,result}){
       {mode==="xbloom"&&result&&<>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:14}}>
           {[{l:"Grind",v:String(result.grindSize)},{l:"RPM",v:String(result.rpm)},{l:"Ratio",v:result.ratio}].map((x,i)=>(
-            <div key={i} style={{textAlign:"center",border:"2px solid "+C.ink,padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
+            <div key={i} style={{textAlign:"center",...glass(24),padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
               <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink}}>{x.v}</div>
               <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:C.muted}}>{x.l}</div>
             </div>
@@ -641,7 +761,7 @@ function ShareCard({mode,form,result}){
       {mode==="manual"&&result&&<>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:14}}>
           {[{l:"Grind",v:String(result.grindSize)},{l:"Temp",v:result.temperature+"°"},{l:"Ratio",v:result.ratio}].map((x,i)=>(
-            <div key={i} style={{textAlign:"center",border:"2px solid "+C.ink,padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
+            <div key={i} style={{textAlign:"center",...glass(24),padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
               <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink}}>{x.v}</div>
               <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:C.muted}}>{x.l}</div>
             </div>
@@ -652,8 +772,8 @@ function ShareCard({mode,form,result}){
       <div style={{marginTop:14,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,lineHeight:1.6}}>{result&&result.flavor}</div>
     </div>
     <div style={{padding:"12px 22px",background:"rgba(0,0,0,0.03)",display:"flex",justifyContent:"space-between"}}>
-      <span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Pour Decisions</span>
-      <span style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,letterSpacing:"0.14em",textTransform:"uppercase"}}>by Ahmed Al Falahi</span>
+      <span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Calibrated Pours</span>
+      <span style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,letterSpacing:"0.14em",textTransform:"uppercase"}}>precision pour-over</span>
     </div>
   </div>;
 }
@@ -662,14 +782,14 @@ function ShareCard({mode,form,result}){
 // ── TEMPERATURE REASONING (shared) ───────────────────────────────
 function TempReason({r}){
   return <>
-    <div style={{border:"2px solid "+C.ink,background:C.card,padding:"16px 18px",marginBottom:12}}>
+    <div style={{...glass(24),background:C.card,padding:"16px 18px",marginBottom:12}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
         <span style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted}}>Why {r.temperature}°C</span>
         <span style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent}}>Safe {r.tempLo}–{r.tempHi}°C</span>
       </div>
       <p style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,margin:0}}>{r.tempReason}</p>
     </div>
-    {r.tip&&<div style={{border:"2px solid "+C.gold,background:C.card,padding:"13px 16px",marginBottom:12}}>
+    {r.tip&&<div style={{...glassAccent("rgba(201,162,39,0.55)",20,{boxShadow:"0 8px 24px rgba(201,162,39,0.14)"}),background:C.card,padding:"13px 16px",marginBottom:12}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.gold,marginBottom:6}}>Brewer's Tip</div>
       <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>{r.tip}</p>
     </div>}
@@ -679,45 +799,49 @@ function TempReason({r}){
 
 function ManualResult({r,brewMode,qAdj,setQAdj}){
   const gr=r.grindSize+qAdj.ode,tmp=r.temperature+qAdj.temp;
-  const rows=[{sym:"◦",label:"Bloom",w:r.bloomWater,cum:r.bloomWater,flow:"2-3 g/s",dur:r.bloomDuration+"s",note:"Saturate all grounds. Wait for full bloom."},...(r.pours||[]).map(p=>({sym:String(p.n).padStart(2,"0"),label:"Pour "+p.n,w:p.water,cum:p.total,flow:p.flow,dur:p.duration+"s",note:p.notes}))];
+  const go=grinderOut(r.grinderId||"Fellow Ode Gen 2",gr);
+  const rows=[{sym:"00",label:"Rinse & preheat",w:null,cum:null,flow:"—",dur:"",note:"Rinse the paper with hot water, dump it. Kills paper taste and preheats the brewer."},{sym:"◦",label:"Bloom",w:r.bloomWater,cum:r.bloomWater,flow:"2-3 g/s",dur:r.bloomDuration+"s",note:"Saturate all grounds. Wait for full bloom."},...(r.pours||[]).map(p=>({sym:String(p.n).padStart(2,"0"),label:"Pour "+p.n,w:p.water,cum:p.total,flow:p.flow,dur:p.duration+"s",note:p.notes}))];
   return <div className="anim">
-    <div style={{display:"flex",background:C.card,border:"2px solid "+C.ink,marginBottom:14}}>
-      <BigN val={gr} top="Grind" bot="Ode Gen 2" adjustable adj={qAdj.ode} onMinus={()=>setQAdj(q=>({...q,ode:q.ode-0.5}))} onPlus={()=>setQAdj(q=>({...q,ode:q.ode+0.5}))}/>
+    <div style={{display:"flex",background:C.card,...glass(24),marginBottom:6}}>
+      <BigN val={go.display} top="Grind" bot={go.microns+" µm"} adjustable adj={qAdj.ode} onMinus={()=>setQAdj(q=>({...q,ode:q.ode-0.5}))} onPlus={()=>setQAdj(q=>({...q,ode:q.ode+0.5}))}/>
       <div style={{width:2,background:C.ink}}/>
       <BigN val={tmp+"°"} top="Temp" bot={r.tempLo+"-"+r.tempHi+"°C"} adjustable adj={qAdj.temp} onMinus={()=>setQAdj(q=>({...q,temp:q.temp-1}))} onPlus={()=>setQAdj(q=>({...q,temp:q.temp+1}))}/>
       <div style={{width:2,background:C.ink}}/>
       <BigN val={r.brewTime} top="Time" bot="target"/>
     </div>
-    <div style={{border:"2px solid "+C.ink,marginBottom:14}}>
+    <div style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted,marginBottom:14,lineHeight:1.5}}>{go.name} · {go.scale} · community-calibrated — trust taste over numbers, adjust ±</div>
+    <div style={{...glass(24),marginBottom:14}}>
       <SpecRow label="Coffee" value={r.coffeeDose+"g"}/><SpecRow label="Ratio" value={r.ratio}/>
       <SpecRow label={brewMode==="Iced"?"Hot Water":"Water"} value={r.totalWater+"g"}/>
       {brewMode==="Iced"&&<SpecRow label="Ice" value={r.iceGrams+"g"} sub="in server first"/>}
+      <SpecRow label="Expected Cup" value={(r.totalWater+(r.iceGrams||0)-Math.round(r.coffeeDose*2.1))+"ml"} sub="grounds hold ~2.1 g/g"/>
       <SpecRow label="Agitation" value={r.agitation}/>
       <div style={{padding:"14px 16px",display:"flex",justifyContent:"space-between"}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>Bloom</span><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{r.bloomWater}g · {r.bloomDuration}s</span></div>
     </div>
     <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Pour Sequence</div>
-    <div style={{border:"2px solid "+C.ink,marginBottom:14}}>
+    <div style={{...glass(24),marginBottom:14}}>
       {rows.map((row,i)=>(
         <div key={i} style={{display:"grid",gridTemplateColumns:"24px 1fr 50px 50px 56px",gap:8,padding:"12px",borderBottom:i<rows.length-1?"1px solid "+C.line:"none"}}>
           <div style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent,paddingTop:2}}>{row.sym}</div>
           <div><div style={{fontFamily:F,fontWeight:700,fontSize:13,color:C.ink,marginBottom:2}}>{row.label}</div><div style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted,lineHeight:1.4}}>{row.note}</div></div>
-          <div style={{textAlign:"right",fontFamily:F,fontWeight:700,fontSize:12,color:C.ink,paddingTop:2}}>{row.w}g</div>
-          <div style={{textAlign:"right",fontFamily:F,fontWeight:700,fontSize:12,color:C.ink,paddingTop:2}}>{row.cum}g</div>
+          <div style={{textAlign:"right",fontFamily:F,fontWeight:700,fontSize:12,color:C.ink,paddingTop:2}}>{row.w==null?"—":row.w+"g"}</div>
+          <div style={{textAlign:"right",fontFamily:F,fontWeight:700,fontSize:12,color:C.ink,paddingTop:2}}>{row.cum==null?"—":row.cum+"g"}</div>
           <div style={{textAlign:"right"}}><div style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.ink}}>{row.flow}</div><div style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.muted}}>{row.dur}</div></div>
         </div>
       ))}
     </div>
     <TempReason r={r}/>
-    <ICard label="Brewmaster's Notes · 30 yrs" dark={true}>{r.brewmaster}</ICard>
+    <ICard label="Brew Notes" dark={true}>{r.brewmaster}</ICard>
     <ICard label="Expected Cup">{r.flavor}</ICard>
+    {r.fact&&<ICard label="☕ Coffee Fact">{r.fact}</ICard>}
   </div>;
 }
-function XbloomResult({r,beanName,qAdj,setQAdj}){
-  const gr=r.grindSize+qAdj.x;
+function XbloomResult({r,beanName}){
+  const gr=r.grindSize;
   const icedTitle=(beanName?"Iced "+beanName:"Iced Recipe")+" — "+r.iceGrams+"g Ice";
   const totalPour=(r.pours||[]).reduce((s,p)=>s+p.volume,0);
   return <div className="anim">
-    {r.isIced&&<div style={{padding:"16px 18px",background:C.card,border:"2px solid "+C.ink,marginBottom:14}}>
+    {r.isIced&&<div style={{padding:"16px 18px",background:C.card,...glass(24),marginBottom:14}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,color:C.accent,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:6}}>Iced Recipe</div>
       <div style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.ink,marginBottom:12}}>{icedTitle}</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:1,background:C.line}}>
@@ -731,43 +855,46 @@ function XbloomResult({r,beanName,qAdj,setQAdj}){
       </div>
     </div>}
     <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Coffee</div>
-    <div style={{border:"2px solid "+C.ink,marginBottom:r.over18?10:16}}>
-      <SpecRow label="Dripper" value="Omni" sub={r.over18?"app: select Other":""}/>
+    <div style={{...glass(24),marginBottom:r.over18?10:16}}>
+      <SpecRow label="Dripper" value={r.dripper} sub={r.needsOther?"app: select Other":""}/>
+      {r.filter&&<SpecRow label="Filter" value={r.filter.id} sub={r.filter.rinse?"rinse first":"no rinse"}/>}
       <SpecRow label="Dose" value={r.dose+"g"}/>
       <SpecRow label="Coffee : Water" value={r.ratio} sub={r.totalVolume+"ml"}/>
       <SpecRow label="Grind Size" value={gr} sub={xbloomMicrons(gr)+"µm · "+grindZone(gr)}/>
       <SpecRow label="Grinder Speed" value={r.rpm} sub="RPM"/>
       <SpecRow label="Temperature" value={r.temperature+"°C"} sub={r.tempLo+"-"+r.tempHi+"°C"}/>
+      <SpecRow label="Expected Cup" value={r.cupOut+"ml"} sub={r.isIced?"after ice melts":"grounds hold ~2.1 g/g"}/>
       <div style={{padding:"14px 16px",display:"flex",justifyContent:"space-between"}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>Brew Time</span><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{r.brewTime}</span></div>
     </div>
-    {r.over18&&<div style={{border:"2px solid "+C.accent,padding:"13px 16px",marginBottom:16,background:C.card}}>
+    {r.over18&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),padding:"13px 16px",marginBottom:16,background:C.card}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.accent,marginBottom:6}}>Dose over 18g — app entry</div>
-      <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>Grind the full <strong>{r.dose}g</strong> and keep using the Omni dripper. The app caps Omni at 18g, so set dose to <strong>18g</strong> at <strong>1:{r.appRatio}</strong> — that lands the same {r.totalVolume}ml of water on your {r.dose}g.</p>
+      <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>Grind the full <strong>{r.dose}g</strong> and keep using the same dripper. The xBloom app caps dose at <strong>18g</strong>, so enter 18g at <strong>1:{r.appRatio}</strong> — that lands the same {r.totalVolume}ml of water on your {r.dose}g.</p>
     </div>}
+    <div style={{...glassThin(16),background:C.card,padding:"11px 16px",marginBottom:12,display:"flex",gap:12,alignItems:"center"}}>
+      <span style={{fontFamily:F,fontWeight:800,fontSize:13,color:C.accent}}>00</span>
+      <span style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.5}}>{r.filter&&!r.filter.rinse
+        ?("No rinse needed — "+r.filter.id+" paper is taste-neutral out of the box. Seat the filter and brew.")
+        :((r.filter?r.filter.id+": ":"")+"Rinse the filter with hot water & dump it — kills paper taste, preheats the dripper.")}</span>
+    </div>
     <div style={{display:"flex",justifyContent:"space-between",marginBottom:8,alignItems:"baseline"}}>
       <span style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.ink}}>Pours</span>
       <span style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.accent}}>{totalPour} / {r.totalVolume}ml</span>
     </div>
     {(r.pours||[]).map((p,i)=><PourCard key={i} p={p} idx={i}/>)}
-    <div style={{border:"2px solid "+C.line,padding:"13px 16px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-      <span style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.muted,letterSpacing:"0.08em",textTransform:"uppercase"}}>Quick Dial — Grind</span>
-      <div style={{display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setQAdj(q=>({...q,x:q.x-1}))} style={{width:30,height:30,background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:700,fontSize:16,cursor:"pointer"}}>−</button>
-        <span style={{fontFamily:F,fontWeight:900,fontSize:18,color:C.ink,minWidth:28,textAlign:"center"}}>{gr}</span>
-        <button onClick={()=>setQAdj(q=>({...q,x:q.x+1}))} style={{width:30,height:30,background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:700,fontSize:16,cursor:"pointer"}}>+</button>
-        {qAdj.x!==0&&<span style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.accent}}>{qAdj.x>0?"+":""}{qAdj.x}</span>}
-      </div>
-    </div>
     <TempReason r={r}/>
-    <ICard label="Brewmaster's Notes · 30 yrs" dark={true}>{r.brewmaster}</ICard>
+    <ICard label="Brew Notes" dark={true}>{r.brewmaster}</ICard>
     <ICard label="Expected Cup">{r.flavor}</ICard>
+    {r.fact&&<ICard label="☕ Coffee Fact">{r.fact}</ICard>}
   </div>;
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────
-const BLANK={beanName:"",origin:"",region:"",variety:"",process:"",altitude:"",notes:"",noteChips:[],roast:"Light",roastDate:"",goal:"Balanced",bloomRatio:"1:3",brewMode:"Hot",brewer:"",filter:"",dose:"18",ratio:"1:16",xBrewMode:"Hot",xDose:"18",xRatio:"1:16",iceMode:"Auto",iceGrams:""};
+const BLANK={beanName:"",origin:"",region:"",variety:"",process:"",altitude:"",notes:"",noteChips:[],roast:"Light",roastDate:"",goal:"Balanced",bloomRatio:"1:3",brewMode:"Hot",brewer:"",filter:"",dose:"18",ratio:"1:16",xBrewMode:"Hot",xDose:"18",xRatio:"1:16",iceMode:"Auto",iceGrams:"",grinder:"Fellow Ode Gen 2",xDripper:"Omni",xFilter:""};
 
 export default function App(){
+  const [lang,setLang]=useState(()=>{try{return localStorage.getItem("cp_lang")||"en";}catch(e){return "en";}});
+  LANG=lang;
+  const toggleLang=()=>{const v=lang==="en"?"ar":"en";setLang(v);try{localStorage.setItem("cp_lang",v);}catch(e){}};
   const [view,setView]=useState("landing");
   const [mode,setMode]=useState("");
   const [form,setForm]=useState(BLANK);
@@ -785,6 +912,7 @@ export default function App(){
   const [pasteText,setPasteText]=useState("");
   const [parseMsg,setParseMsg]=useState("");
   const [qAdj,setQAdj]=useState({ode:0,x:0,temp:0});
+  const [showAbout,setShowAbout]=useState(false);
   const [insights,setInsights]=useState([]);
 
   const upd=(k,v)=>setForm(f=>({...f,[k]:v}));
@@ -805,7 +933,6 @@ export default function App(){
   const canB1=!!form.process&&!!form.roast;
   const canManu=!!form.brewer&&!!form.filter&&!!form.dose&&!!form.ratio;
   const canXbl=!!form.xDose&&!!form.xRatio;
-  const autoDripper=parseFloat(form.xDose)>18?"Other":"Omni";
   const dRoast=daysOff(form.roastDate);
 
   function yieldStr(){
@@ -834,7 +961,7 @@ export default function App(){
     const r=mode==="xbloom"?calculateXbloom(form,null):calculateManual(form,null);
     setResult(r); setAdj(null); setRev(0); setPicked(null); setSaveMsg(""); setRating(0); setQAdj({ode:0,x:0,temp:0});
     const dl=getDial(form.beanName); setProgress(dl?dl.progress:0);
-    setView("result");
+    setView("calibrating");
   }
 
   function pickDoctor(item){ setPicked(item); }
@@ -876,11 +1003,11 @@ export default function App(){
   const W={maxWidth:600,margin:"0 auto",padding:"0 22px"};
   const headerNav=(left,right,onLeft)=>(
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:34}}>
-      <button onClick={onLeft} style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,background:"none",border:"none",cursor:"pointer"}}>{left}</button>
-      <div style={{fontFamily:F,fontWeight:800,fontSize:10,color:C.accent,letterSpacing:"0.16em",textTransform:"uppercase"}}>{right}</div>
+      <button onClick={onLeft} style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,background:"none",border:"none",cursor:"pointer"}}>{t(left)}</button>
+      <div style={{fontFamily:F,fontWeight:800,fontSize:10,color:C.accent,letterSpacing:"0.16em",textTransform:"uppercase"}}>{t(right)}</div>
     </div>
   );
-  const bigHead=t=><div style={{fontFamily:F,fontWeight:800,fontSize:23,color:C.ink,lineHeight:1.1,marginBottom:26,letterSpacing:"-0.02em",whiteSpace:"pre-line"}}>{t}</div>;
+  const bigHead=txt=><div style={{fontFamily:FD,fontWeight:700,fontSize:26,color:C.ink,lineHeight:1.15,marginBottom:26,letterSpacing:"-0.01em",whiteSpace:"pre-line"}}>{t(txt)}</div>;
 
   return <>
     <style>{CSS}</style>
@@ -888,27 +1015,30 @@ export default function App(){
     <div style={{position:"fixed",inset:0,background:"#FAF9F5",zIndex:-1}}/>
     <Blobs/>
     {/* Main wrapper: transparent so blobs show through, cards have their own white fills */}
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,paddingBottom:60}}>
+    <div dir={lang==="ar"?"rtl":"ltr"} style={{minHeight:"100vh",position:"relative",zIndex:1,paddingBottom:60}}>
 
       {/* LANDING */}
       {view==="landing"&&<div className="anim">
-        <div style={{...W,textAlign:"center",paddingTop:72,paddingBottom:40}}>
-          <div style={{fontFamily:F,fontWeight:900,fontSize:38,lineHeight:0.9,color:C.ink,letterSpacing:"-0.03em",textTransform:"uppercase"}}>Pour<br/>Decisions</div>
-          <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.stone,marginTop:16,letterSpacing:"0.22em",textTransform:"uppercase"}}>by Ahmed Al Falahi</div>
+        <div style={{...W,display:"flex",justifyContent:"flex-end",paddingTop:18}}>
+          <button onClick={toggleLang} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.stone,background:"transparent",...glassThin(16),padding:"7px 14px",cursor:"pointer",letterSpacing:"0.06em"}}>{lang==="en"?"العربية":"English"}</button>
+        </div>
+        <div style={{...W,textAlign:"center",paddingTop:48,paddingBottom:40}}>
+          <div style={{fontFamily:FD,fontWeight:900,fontSize:38,lineHeight:0.95,color:C.ink,letterSpacing:"-0.02em",textTransform:"uppercase"}}>Calibrated<br/>Pours</div>
+          <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.stone,marginTop:16,letterSpacing:"0.22em",textTransform:"uppercase"}}>{t("Precision pour-over recipes")}</div>
         </div>
         <div style={{...W,display:"flex",flexDirection:"column",gap:12}}>
-          <div onClick={()=>{setMode("xbloom");setView("bean");}} style={{border:"2px solid "+C.ink,background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div onClick={()=>{setMode("xbloom");setView("bean");}} style={{...glass(24),background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{display:"flex",alignItems:"center",gap:16}}>
               <div style={{fontFamily:F,fontWeight:900,fontSize:42,color:C.ink,letterSpacing:"-0.06em",lineHeight:1}}>xb</div>
               <div style={{fontFamily:F,fontSize:21,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}><span style={{fontWeight:400}}>x</span><span style={{fontWeight:900}}>Bloom</span><span style={{fontWeight:600}}> Studio</span></div>
             </div>
             <div style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</div>
           </div>
-          <div onClick={()=>{setMode("manual");setView("bean");}} style={{border:"2px solid "+C.ink,background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div onClick={()=>{setMode("manual");setView("bean");}} style={{...glass(24),background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{fontFamily:F,fontWeight:900,fontSize:21,color:C.ink,letterSpacing:"-0.02em",textTransform:"uppercase"}}>Manual<br/><span style={{fontWeight:600,fontSize:15,textTransform:"none"}}>Pour-Over</span></div>
             <div style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</div>
           </div>
-          <button onClick={openSaved} style={{marginTop:8,padding:"14px",background:"transparent",border:"2px solid "+C.line,color:C.stone,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>☆ Bean Journal</button>
+          <button onClick={openSaved} style={{marginTop:8,padding:"14px",background:"transparent",...glassThin(16),color:C.stone,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>{t("☆ Bean Journal")}</button>
         </div>
       </div>}
 
@@ -916,20 +1046,20 @@ export default function App(){
       {view==="saved"&&<div className="anim" style={{...W,paddingTop:36}}>
         {headerNav("‹ Home","Bean Journal",reset)}
         {bigHead("Bean\nJournal")}
-        {insights.length>0&&<div style={{border:"2px solid "+C.accent,background:C.card,padding:"14px 16px",marginBottom:18}}>
+        {insights.length>0&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),background:C.card,padding:"14px 16px",marginBottom:18}}>
           <div style={{fontFamily:F,fontWeight:800,fontSize:10,color:C.accent,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:8}}>Process Intelligence</div>
           {insights.map((s,i)=><div key={i} style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,marginBottom:4}}>· {s}</div>)}
         </div>}
         {saved.length===0&&<div style={{fontFamily:F,fontWeight:500,fontSize:14,color:C.muted,padding:"20px 0"}}>No brews logged yet. Generate a recipe, dial it in, and save it here.</div>}
         {saved.map(rec=>(
-          <div key={rec.id} style={{border:"2px solid "+C.ink,padding:"16px",marginBottom:10,background:C.card}}>
+          <div key={rec.id} style={{...glass(24),padding:"16px",marginBottom:10,background:C.card}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
               <div onClick={()=>loadSaved(rec)} style={{cursor:"pointer",flex:1}}>
                 <div style={{fontFamily:F,fontWeight:800,fontSize:15,color:C.ink}}>{rec.name}{rec.rev>0?" · v"+(rec.rev+1):""}</div>
                 <div style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.muted,marginTop:3}}>{rec.mode==="xbloom"?"Xbloom":"Manual"} · {rec.goal||"Balanced"} · {new Date(rec.ts).toLocaleDateString()}</div>
                 {rec.rating>0&&<div style={{fontFamily:F,fontWeight:700,fontSize:13,color:C.gold,marginTop:4}}>{"★".repeat(rec.rating)}{"☆".repeat(5-rec.rating)}</div>}
               </div>
-              <button onClick={()=>removeSaved(rec.id)} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent2,background:"none",border:"none",cursor:"pointer",padding:"6px 8px"}}>Delete</button>
+              <button onClick={()=>removeSaved(rec.id)} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent2,background:"none",border:"none",cursor:"pointer",padding:"6px 8px"}}>{t("Delete")}</button>
             </div>
           </div>
         ))}
@@ -941,22 +1071,21 @@ export default function App(){
         {bigHead("Tell me about\nthe bean")}
 
         {/* Import shortcuts */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
-          <button onClick={()=>alert("Bag scanner — coming in the App Store version.")} style={{padding:"13px 10px",border:"2px solid "+C.line,background:C.card,fontFamily:F,fontWeight:600,fontSize:11,color:C.muted,cursor:"pointer",letterSpacing:"0.04em"}}>📷 Scan Bag</button>
-          <button onClick={()=>setShowPaste(s=>!s)} style={{padding:"13px 10px",border:"2px solid "+(showPaste?C.ink:C.ink),background:showPaste?C.ink:C.card,fontFamily:F,fontWeight:700,fontSize:11,color:showPaste?C.white:C.ink,cursor:"pointer",letterSpacing:"0.04em"}}>📋 Paste Bag Text</button>
+        <div style={{marginBottom:14}}>
+          <button onClick={()=>setShowPaste(s=>!s)} style={{width:"100%",padding:"13px 10px",...glass(24),background:showPaste?C.ink:C.card,fontFamily:F,fontWeight:700,fontSize:11,color:showPaste?C.white:C.ink,cursor:"pointer",letterSpacing:"0.04em"}}>{t("📋 Paste Bag Text — auto-fill the form")}</button>
         </div>
-        {showPaste&&<div className="anim" style={{border:"2px solid "+C.ink,background:C.card,padding:16,marginBottom:14}}>
+        {showPaste&&<div className="anim" style={{...glass(24),background:C.card,padding:16,marginBottom:14}}>
           <Lbl c="Paste the roaster's description"/>
-          <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)} rows={5} placeholder="Paste from the coffee bag or roaster site — origin, process, variety, altitude, roast level and tasting notes. I'll fill the form for you." style={{width:"100%",boxSizing:"border-box",background:"transparent",border:"2px solid "+C.line,padding:"10px 12px",fontFamily:F,fontWeight:500,fontSize:13,color:C.ink,outline:"none",resize:"vertical",marginTop:8,lineHeight:1.5}}/>
+          <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)} rows={5} placeholder="Paste from the coffee bag or roaster site — origin, process, variety, altitude, roast level and tasting notes. I'll fill the form for you." style={{width:"100%",boxSizing:"border-box",background:"transparent",...glassThin(16),padding:"10px 12px",fontFamily:F,fontWeight:500,fontSize:13,color:C.ink,outline:"none",resize:"vertical",marginTop:8,lineHeight:1.5}}/>
           <div style={{display:"flex",gap:10,marginTop:12}}>
-            <button onClick={()=>{setShowPaste(false);setPasteText("");}} style={{flex:1,padding:"12px",border:"2px solid "+C.line,background:"transparent",fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Cancel</button>
+            <button onClick={()=>{setShowPaste(false);setPasteText("");}} style={{flex:1,padding:"12px",...glassThin(16),background:"transparent",fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Cancel</button>
             <button onClick={doParse} style={{flex:2,padding:"12px",border:"none",background:C.accent,color:C.white,fontFamily:F,fontWeight:800,fontSize:12,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Parse & Fill</button>
           </div>
         </div>}
-        {parseMsg&&<div style={{border:"2px solid "+C.accent,background:C.card,padding:"11px 14px",marginBottom:14,fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,lineHeight:1.5}}>{parseMsg}</div>}
-        <div style={{textAlign:"center",fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,marginBottom:24,letterSpacing:"0.1em",textTransform:"uppercase"}}>or enter manually</div>
+        {parseMsg&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),background:C.card,padding:"11px 14px",marginBottom:14,fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,lineHeight:1.5}}>{parseMsg}</div>}
+        <div style={{textAlign:"center",fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,marginBottom:24,letterSpacing:"0.1em",textTransform:"uppercase"}}>{t("or enter manually")}</div>
 
-        <div style={{marginBottom:20}}><Lbl c="Bean / Lot Name"/><TIn value={form.beanName} onChange={e=>upd("beanName",e.target.value)} placeholder="e.g. Pink Bourbon, Gesha Village"/></div>
+        <div style={{marginBottom:20}}><Lbl c="Coffee Name"/><TIn value={form.beanName} onChange={e=>upd("beanName",e.target.value)} placeholder="e.g. Guji — Fermentation Lab"/></div>
 
         <div style={{marginBottom:20}}>
           <Lbl c="Origin"/>
@@ -967,15 +1096,15 @@ export default function App(){
           </datalist>
         </div>
 
-        <div style={{marginBottom:20}}><Lbl c="Processing Method *"/><Sel value={form.process} onChange={e=>upd("process",e.target.value)} options={PROCESSES} placeholder="Select processing"/></div>
+        <div style={{marginBottom:20}}><Lbl c="Processing Method" req/><Sel value={form.process} onChange={e=>upd("process",e.target.value)} options={PROCESSES} placeholder="Select processing"/></div>
 
-        <div style={{marginBottom:20}}><Lbl c="Roast Level *"/><Seg options={ROASTS} value={form.roast} onChange={v=>upd("roast",v)} small={true}/></div>
+        <div style={{marginBottom:20}}><Lbl c="Roast Level" req/><Seg options={ROASTS} value={form.roast} onChange={v=>upd("roast",v)} small={true}/></div>
 
         <div style={{marginBottom:22}}>
-          <Lbl c="Roast Date"/>
+          <Lbl c="Roast Date" hint="optional · improves accuracy"/>
           <TIn type="date" value={form.roastDate} onChange={e=>upd("roastDate",e.target.value)} placeholder=""/>
           {dRoast!==null&&(
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",border:"2px solid "+C.ink,marginTop:10}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",...glass(24),marginTop:10}}>
               <div style={{padding:"12px 14px",borderRight:"1px solid "+C.line}}>
                 <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted,marginBottom:4}}>Days Off Roast</div>
                 <div style={{fontFamily:F,fontWeight:900,fontSize:28,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{dRoast}</div>
@@ -1020,13 +1149,14 @@ export default function App(){
       {/* GOAL */}
       {view==="goal"&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
         <ProgressSteps current={2}/>
-        {bigHead("What do you want\nin the cup?")}
+        {bigHead(t("Choose your\ntaste profile"))}
+        <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,marginTop:-10,marginBottom:22}}>{t("Same bean, different cup. Your goal tells the engine what to chase — it shifts the grind, water temperature, bloom time and agitation to steer the extraction toward the flavours you actually want.")}</div>
         <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:28}}>
           {GOALS.map(g=>(
             <button key={g} onClick={()=>upd("goal",g)}
-              style={{padding:"16px 18px",border:"2px solid "+(form.goal===g?C.ink:C.line),background:form.goal===g?C.ink:C.card,textAlign:"left",cursor:"pointer"}}>
-              <div style={{fontFamily:F,fontWeight:700,fontSize:15,color:form.goal===g?C.white:C.ink,marginBottom:3}}>{g}</div>
-              <div style={{fontFamily:F,fontWeight:500,fontSize:12,color:form.goal===g?"rgba(255,255,255,0.65)":C.muted}}>{GOAL_DESC[g]}</div>
+              style={{padding:"16px 18px",border:"1.5px solid "+(form.goal===g?"rgba(30,10,60,0.85)":"rgba(255,255,255,0.65)"),borderRadius:20,backdropFilter:"blur(18px)",WebkitBackdropFilter:"blur(18px)",boxShadow:"0 6px 20px rgba(94,68,180,0.10)",background:form.goal===g?C.ink:C.card,textAlign:LANG==="ar"?"right":"left",cursor:"pointer"}}>
+              <div style={{fontFamily:F,fontWeight:700,fontSize:15,color:form.goal===g?C.white:C.ink,marginBottom:3}}>{t(g)}</div>
+              <div style={{fontFamily:F,fontWeight:500,fontSize:12,color:form.goal===g?"rgba(255,255,255,0.65)":C.muted}}>{t(GOAL_DESC[g])}</div>
             </button>
           ))}
         </div>
@@ -1040,13 +1170,24 @@ export default function App(){
       {view==="brew"&&mode==="xbloom"&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
         <ProgressSteps current={3}/>
         {bigHead("Configure\nthe machine")}
-        <div style={{marginBottom:24}}><Lbl c="Brew Mode"/><Seg options={["Hot","Iced"]} value={form.xBrewMode} onChange={v=>upd("xBrewMode",v)}/></div>
-        <RangeField label="Dose" value={form.xDose} min={8} max={25} step={1} unit="g" onChange={v=>upd("xDose",v)}/>
-        <div style={{marginTop:-16,marginBottom:20,display:"flex",alignItems:"center",gap:8}}>
-          <div style={{width:7,height:7,background:C.ink}}/>
-          <span style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.stone}}>Auto dripper: <strong>{autoDripper}</strong></span>
+        <div style={{marginBottom:24}}><Lbl c="How do you like your coffee?"/><Seg options={["Hot","Iced"]} value={form.xBrewMode} onChange={v=>upd("xBrewMode",v)}/></div>
+        <FillPill label="Dose" value={form.xDose} min={8} max={25} step={1} unit="g" onChange={v=>upd("xDose",v)}/>
+        {parseFloat(form.xDose)>18&&<div className="anim" style={{marginTop:-12,marginBottom:20}}>
+          <Lbl c="Dripper on the machine"/>
+          <Sel value={form.xDripper||"Omni"} onChange={e=>upd("xDripper",e.target.value)} options={XDRIPPERS.map(dp=>dp.id)} placeholder={t("Select your dripper")}/>
+          <div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,lineHeight:1.5}}>
+            {(XDRIPPERS.find(dp=>dp.id===(form.xDripper||"Omni"))||XDRIPPERS[0]).note}
+            {(form.xDripper||"Omni")==="Omni"
+              ?" — over 18g the basket runs full, so level the bed and pour gently."
+              :" — select “Other dripper” in the xBloom app."}
+          </div>
+        </div>}
+        <div style={{marginTop:-4,marginBottom:20}}>
+          <Lbl c="Paper Filter"/>
+          <Sel value={form.xFilter||""} onChange={e=>upd("xFilter",e.target.value)} options={XFILTERS.map(f=>f.id)} placeholder={t("Select filter")}/>
+          {form.xFilter&&(()=>{const f=XFILTERS.find(x=>x.id===form.xFilter);return f?<div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,lineHeight:1.5}}><span style={{fontWeight:700,color:f.rinse?C.gold:C.accent}}>{f.rinse?"Rinse first":"No rinse needed"}</span> — {f.note}</div>:null;})()}
         </div>
-        <RangeField label={form.xBrewMode==="Iced"?"Target Ratio (total drink)":"Ratio"} value={pRatio(form.xRatio)||15} min={5} max={25} step={0.5} unit="ratio" onChange={v=>upd("xRatio","1:"+v)}/>
+        <FillPill label={form.xBrewMode==="Iced"?"Target Ratio (total drink)":"Ratio"} value={pRatio(form.xRatio)||15} min={5} max={25} step={0.5} unit="ratio" onChange={v=>upd("xRatio","1:"+v)}/>
         {form.xBrewMode==="Iced"&&<div style={{marginBottom:24}}>
           <Lbl c="Ice Amount"/>
           <Seg options={["Auto","Manual"]} value={form.iceMode} onChange={v=>upd("iceMode",v)}/>
@@ -1055,19 +1196,11 @@ export default function App(){
             const tot=Math.round((parseFloat(form.xDose)||18)*(pRatio(form.xRatio)||15));
             const iceMin=round5(tot*0.20),iceMax=round5(tot*0.58),iceVal=parseFloat(form.iceGrams)||round5(tot*0.40);
             return <div style={{marginTop:16}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
-                <Lbl c="Ice Grams"/>
-                <span style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{iceVal}g</span>
-              </div>
-              <input type="range" min={iceMin} max={iceMax} step={5} value={iceVal} onChange={e=>upd("iceGrams",e.target.value)}/>
-              <div style={{display:"flex",justifyContent:"space-between",marginTop:7}}>
-                <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{iceMin}g</span>
-                <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{iceMax}g</span>
-              </div>
+              <FillPill label="Ice Grams" value={iceVal} min={iceMin} max={iceMax} step={5} unit="g" onChange={v=>upd("iceGrams",v)}/>
             </div>;
           })()}
         </div>}
-        <div style={{marginBottom:24}}><Lbl c="Bloom Ratio"/><Seg options={["1:2","1:3"]} value={form.bloomRatio} onChange={v=>upd("bloomRatio",v)}/><div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone}}>{form.bloomRatio==="1:2"?("2x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*2))+"g bloom"):("3x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*3))+"g bloom")}</div></div>
+        <div style={{marginBottom:24}}><Lbl c="Bloom Ratio"/><Seg options={[{value:"1:2",label:"1:2"},{value:"1:3",label:t("1:3 (recommended)")}]} value={form.bloomRatio} onChange={v=>upd("bloomRatio",v)}/><div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone}}>{form.bloomRatio==="1:2"?("2x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*2))+"g bloom"):("3x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*3))+"g bloom")}</div></div>
         <YieldBox text={yieldStr()}/>
         <div style={{display:"flex",gap:10}}><BtnG onClick={()=>setView("goal")}>‹ Back</BtnG><BtnP onClick={generate} disabled={!canXbl}>Generate</BtnP></div>
       </div>}
@@ -1078,56 +1211,52 @@ export default function App(){
         {bigHead("How are you\nbrewing it")}
         <div style={{marginBottom:22}}><Lbl c="Brewer"/><div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:4}}>{BREWERS.map(b=><Pill key={b} active={form.brewer===b} onClick={()=>{upd("brewer",b);upd("filter","");}}>{b}</Pill>)}</div></div>
         {form.brewer&&<div style={{marginBottom:22}}><Lbl c="Filter"/><Sel value={form.filter} onChange={e=>upd("filter",e.target.value)} options={FILTERS[form.brewer]||[]} placeholder="Select filter"/></div>}
+        <div style={{marginBottom:22}}><Lbl c="Grinder"/><div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:4}}>{GRINDERS.map(g=><Pill key={g.id} active={(form.grinder||"Fellow Ode Gen 2")===g.id} onClick={()=>upd("grinder",g.id)}>{g.id}</Pill>)}</div></div>
         <div style={{marginBottom:24}}><Lbl c="Brew Mode"/><Seg options={["Hot","Iced"]} value={form.brewMode} onChange={v=>upd("brewMode",v)}/></div>
-        <RangeField label="Dose" value={form.dose} min={8} max={40} step={1} unit="g" onChange={v=>upd("dose",v)}/>
-        <RangeField label="Ratio" value={pRatio(form.ratio)||15} min={12} max={18} step={0.5} unit="ratio" onChange={v=>upd("ratio","1:"+v)}/>
-        <div style={{marginBottom:24}}><Lbl c="Bloom Ratio"/><Seg options={["1:2","1:3"]} value={form.bloomRatio} onChange={v=>upd("bloomRatio",v)}/><div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone}}>{form.bloomRatio==="1:2"?("2x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*2))+"g bloom"):("3x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*3))+"g bloom")}</div></div>
+        <FillPill label="Dose" value={form.dose} min={8} max={40} step={1} unit="g" onChange={v=>upd("dose",v)}/>
+        <FillPill label="Ratio" value={pRatio(form.ratio)||15} min={12} max={18} step={0.5} unit="ratio" onChange={v=>upd("ratio","1:"+v)}/>
+        <div style={{marginBottom:24}}><Lbl c="Bloom Ratio"/><Seg options={[{value:"1:2",label:"1:2"},{value:"1:3",label:t("1:3 (recommended)")}]} value={form.bloomRatio} onChange={v=>upd("bloomRatio",v)}/><div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone}}>{form.bloomRatio==="1:2"?("2x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*2))+"g bloom"):("3x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*3))+"g bloom")}</div></div>
         <YieldBox text={yieldStr()}/>
         <div style={{display:"flex",gap:10}}><BtnG onClick={()=>setView("goal")}>‹ Back</BtnG><BtnP onClick={generate} disabled={!canManu}>Generate</BtnP></div>
       </div>}
+
+      {/* CALIBRATING */}
+      {view==="calibrating"&&<Calibrating onDone={()=>setView("result")}/>}
 
       {/* RESULT */}
       {view==="result"&&result&&<div style={{...W,paddingTop:36,paddingBottom:40}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
           <div>
-            <div style={{fontFamily:F,fontWeight:900,fontSize:22,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em"}}>Your Recipe</div>
+            <div style={{fontFamily:FD,fontWeight:900,fontSize:22,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{t("Your Recipe")}</div>
             {rev>0&&<div style={{fontFamily:F,fontWeight:700,fontSize:10,color:C.accent,letterSpacing:"0.1em",textTransform:"uppercase",marginTop:2}}>Revision {rev+1}</div>}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={()=>setView("brew")} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.ink,background:"none",border:"2px solid "+C.ink,padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>Edit</button>
-            <button onClick={reset} style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.stone,background:"none",border:"2px solid "+C.line,padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>New</button>
+            <button onClick={()=>setView("brew")} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.ink,background:"none",...glass(24),padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>{t("Edit")}</button>
+            <button onClick={reset} style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.stone,background:"none",...glassThin(16),padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>{t("New")}</button>
           </div>
         </div>
         {(progress>0||rev>0)&&<ProgressBar progress={progress}/>}
-        {mode==="xbloom"?<XbloomResult r={result} beanName={form.beanName} qAdj={qAdj} setQAdj={setQAdj}/>:<ManualResult r={result} brewMode={form.brewMode} qAdj={qAdj} setQAdj={setQAdj}/>}
+        {mode==="xbloom"?<XbloomResult r={result} beanName={form.beanName}/>:<ManualResult r={result} brewMode={form.brewMode} qAdj={qAdj} setQAdj={setQAdj}/>}
         <div style={{display:"flex",gap:10,marginTop:14,marginBottom:10}}>
-          <button onClick={()=>setView("timer")} style={{flex:1,padding:"13px",background:C.ink,border:"none",color:C.white,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>▶ Brew Timer</button>
-          <button onClick={()=>setView("share")} style={{flex:1,padding:"13px",background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>Share Card</button>
-          {mode==="xbloom"&&<button onClick={()=>setView("export")} style={{flex:1,padding:"13px",background:"transparent",border:"2px solid "+C.line,color:C.stone,fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Export</button>}
+          <button onClick={()=>setView("share")} style={{flex:1,padding:"13px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>{t("Share Card")}</button>
         </div>
-        <div style={{border:"2px solid "+C.ink,background:C.ink,padding:"18px",marginBottom:14}}>
-          <div style={{fontFamily:F,fontWeight:900,fontSize:16,color:C.white,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:6}}>Brewed it?</div>
+        <div style={{...glass(24),background:C.ink,padding:"18px",marginBottom:14}}>
+          <div style={{fontFamily:F,fontWeight:900,fontSize:16,color:C.white,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:6}}>{t("Brewed it?")}</div>
           <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:"rgba(255,255,255,0.8)",lineHeight:1.6,marginBottom:14}}>Tell the Coffee Doctor how it tasted and it will dial in your next version.</div>
-          <button onClick={()=>{setPicked(null);setView("doctor");}} style={{width:"100%",padding:"14px",background:C.white,border:"none",color:C.ink,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Open Coffee Doctor</button>
+          <button onClick={()=>{setPicked(null);setView("doctor");}} style={{width:"100%",padding:"14px",background:C.white,border:"none",borderRadius:16,color:C.ink,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>{t("Open Coffee Doctor")}</button>
         </div>
-        <div style={{border:"2px solid "+C.line,padding:"16px",marginBottom:14,background:C.card}}>
+        <div style={{...glassThin(16),padding:"16px",marginBottom:14,background:C.card}}>
           <Lbl c="Rate this brew"/>
           <div style={{display:"flex",gap:6,marginBottom:14}}>
-            {[1,2,3,4,5].map(n=><button key={n} onClick={()=>setRating(n)} style={{flex:1,padding:"10px 0",background:n<=rating?C.gold:"transparent",border:"2px solid "+(n<=rating?C.gold:C.line),color:n<=rating?C.white:C.muted,fontFamily:F,fontWeight:800,fontSize:16,cursor:"pointer"}}>★</button>)}
+            {[1,2,3,4,5].map(n=><button key={n} onClick={()=>setRating(n)} style={{flex:1,padding:"10px 0",background:n<=rating?C.gold:"transparent",border:"1.5px solid "+(n<=rating?"rgba(201,162,39,0.8)":"rgba(150,130,210,0.3)"),borderRadius:12,backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",color:n<=rating?C.white:C.muted,fontFamily:F,fontWeight:800,fontSize:16,cursor:"pointer"}}>★</button>)}
           </div>
           <div style={{display:"flex",gap:10}}>
-            <button onClick={doSave} style={{flex:2,padding:"14px",background:C.accent,border:"none",color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Save to Journal</button>
-            <button onClick={doCopy} style={{flex:1,padding:"14px",background:"transparent",border:"2px solid "+C.ink,color:C.ink,fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Copy</button>
+            <button onClick={doSave} style={{flex:2,padding:"14px",background:C.accent,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>{t("Save to Journal")}</button>
+            <button onClick={doCopy} style={{flex:1,padding:"14px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>{t("Copy")}</button>
           </div>
           {saveMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.accent,textAlign:"center",paddingTop:12}}>{saveMsg}</div>}
           {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,textAlign:"center",paddingTop:8}}>{copyMsg}</div>}
         </div>
-      </div>}
-
-      {/* BREW TIMER */}
-      {view==="timer"&&result&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
-        {headerNav("‹ Recipe","Brew Timer",()=>setView("result"))}
-        <BrewTimer steps={buildSteps(result,mode)} onClose={()=>setView("result")}/>
       </div>}
 
       {/* SHARE CARD */}
@@ -1136,7 +1265,7 @@ export default function App(){
         {bigHead("Share\nyour brew")}
         <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,marginBottom:20,lineHeight:1.7}}>Screenshot this card and share it anywhere.</div>
         <ShareCard mode={mode} form={form} result={result}/>
-        <button onClick={doCopy} style={{width:"100%",padding:"14px",background:C.ink,border:"none",color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",marginTop:14}}>Copy Recipe Text</button>
+        <button onClick={doCopy} style={{width:"100%",padding:"14px",background:C.ink,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",marginTop:14}}>{t("Copy Recipe Text")}</button>
         {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,textAlign:"center",paddingTop:12}}>{copyMsg}</div>}
       </div>}
 
@@ -1145,18 +1274,18 @@ export default function App(){
         {headerNav("‹ Recipe","Coffee Doctor",()=>setView("result"))}
         {bigHead("How did\nit taste?")}
         {!picked&&<>
-          <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>What do you want more of?</div>
+          <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>{t("What do you want more of?")}</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:28}}>
-            {DOC_GOALS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{textAlign:"left",padding:"15px 16px",background:C.card,border:"2px solid "+C.ink,fontFamily:F,fontWeight:700,fontSize:14,color:C.ink,cursor:"pointer"}}>{it.tag}</button>)}
+            {DOC_GOALS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{textAlign:"left",padding:"15px 16px",background:C.card,...glass(24),fontFamily:F,fontWeight:700,fontSize:14,color:C.ink,cursor:"pointer"}}>{it.tag}</button>)}
           </div>
-          <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>Or what went wrong?</div>
+          <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>{t("Or what went wrong?")}</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:22}}>
-            {DOC_PROBS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{padding:"11px 16px",background:"transparent",border:"2px solid "+C.line,fontFamily:F,fontWeight:700,fontSize:13,color:C.stone,cursor:"pointer"}}>{it.tag}</button>)}
-            <button onClick={markPerfect} style={{padding:"11px 16px",background:C.gold,border:"2px solid "+C.gold,fontFamily:F,fontWeight:800,fontSize:13,color:C.white,cursor:"pointer"}}>★ Perfect</button>
+            {DOC_PROBS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{padding:"11px 16px",background:"transparent",...glassThin(16),fontFamily:F,fontWeight:700,fontSize:13,color:C.stone,cursor:"pointer"}}>{it.tag}</button>)}
+            <button onClick={markPerfect} style={{padding:"11px 16px",background:C.gold,...glassAccent("rgba(201,162,39,0.55)",20,{boxShadow:"0 8px 24px rgba(201,162,39,0.14)"}),fontFamily:F,fontWeight:800,fontSize:13,color:C.white,cursor:"pointer"}}>★ Perfect</button>
           </div>
         </>}
         {picked&&<div className="anim">
-          <div style={{border:"2px solid "+C.ink,padding:"20px",marginBottom:16,background:C.card}}>
+          <div style={{...glass(24),padding:"20px",marginBottom:16,background:C.card}}>
             <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink,marginBottom:8,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{picked.tag}</div>
             {picked.diag&&<div style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent2,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10}}>Diagnosis: {picked.diag}</div>}
             <p style={{fontFamily:F,fontWeight:500,fontSize:14,color:C.stone,lineHeight:1.7,margin:0}}>{picked.why}</p>
@@ -1168,37 +1297,20 @@ export default function App(){
         </div>}
       </div>}
 
-      {/* EXPORT */}
-      {view==="export"&&result&&mode==="xbloom"&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
-        {headerNav("‹ Recipe","Export",()=>setView("result"))}
-        {bigHead("Export to\nxBloom")}
-        <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,marginBottom:20}}>Enter these into a new recipe in the xBloom app. Tap Copy to grab the full recipe as text.</div>
-        <div style={{border:"2px solid "+C.ink,marginBottom:14}}>
-          <div style={{background:C.ink,padding:"12px 16px"}}><span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.white,letterSpacing:"0.1em",textTransform:"uppercase"}}>Coffee — Basic Specs</span></div>
-          <SpecRow label="Dripper" value="Omni" sub={result.over18?"select Other in app":""}/>
-          <SpecRow label="Dose" value={result.dose+"g"}/>
-          <SpecRow label="Coffee : Water" value={result.ratio} sub={result.totalVolume+"ml"}/>
-          <SpecRow label="Grind Size" value={result.grindSize+qAdj.x} sub={grindZone(result.grindSize+qAdj.x)}/>
-          <SpecRow label="Grinder Speed" value={result.rpm} sub="RPM"/>
-        </div>
-        <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Pours</div>
-        {(result.pours||[]).map((p,i)=><PourCard key={i} p={p} idx={i}/>)}
-        {result.over18&&<div style={{border:"2px solid "+C.accent,padding:"13px 16px",marginTop:14,background:C.card}}>
-          <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.accent,marginBottom:6}}>Dose over 18g</div>
-          <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>Grind the full {result.dose}g on the Omni. In-app: set dose 18g at 1:{result.appRatio} to match the water volume.</p>
-        </div>}
-        <button onClick={doCopy} style={{width:"100%",padding:"15px",background:C.accent,border:"none",color:C.white,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",marginTop:8}}>Copy Full Recipe</button>
-        {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.accent,textAlign:"center",paddingTop:12}}>{copyMsg}</div>}
-        <div style={{border:"2px solid "+C.line,padding:"14px 16px",marginTop:16,background:C.card}}>
-          <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted,marginBottom:6}}>App Store version</div>
-          <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>The native iOS app writes this straight to an xBloom pod over NFC — one tap, no typing. Ratios round to whole numbers for the NFC tag format.</p>
+      {showAbout&&<div onClick={()=>setShowAbout(false)} style={{position:"fixed",inset:0,background:"rgba(30,10,60,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:24}}>
+        <div onClick={e=>e.stopPropagation()} style={{background:C.bg,...glass(24),maxWidth:420,width:"100%",padding:"28px 26px"}}>
+          <div style={{fontFamily:FD,fontWeight:900,fontSize:24,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:6}}>Calibrated Pours</div>
+          <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.accent,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:16}}>Precision pour-over recipes</div>
+          <p style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,margin:"0 0 14px"}}>Every coffee is different. Roast date, origin, variety, roast level and process all change how a bean extracts — so your recipe should change too. This app reads the bean and builds the recipe. No accounts, no cloud, everything stays on your device.</p>
+          <p style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,margin:"0 0 18px"}}>Designed & built by Ahmed Al Falahi · UAE</p>
+          <button onClick={()=>setShowAbout(false)} style={{width:"100%",padding:"13px",background:C.ink,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Close</button>
         </div>
       </div>}
 
       {/* FOOTER */}
-      <div style={{...W,borderTop:"2px solid "+C.ink,paddingTop:16,paddingBottom:16,marginTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",background:"transparent"}}>
-        <span style={{fontFamily:F,fontWeight:900,fontSize:13,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Pour Decisions</span>
-        <span style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:C.muted}}>Ahmed Al Falahi</span>
+      <div style={{...W,borderTop:"1px solid rgba(120,100,190,0.25)",paddingTop:16,paddingBottom:16,marginTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",background:"transparent"}}>
+        <span style={{fontFamily:FD,fontWeight:900,fontSize:13,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Calibrated Pours</span>
+        <button onClick={()=>setShowAbout(true)} style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:C.muted,background:"none",border:"none",cursor:"pointer",padding:0}}>{t("About")}</button>
       </div>
     </div>
   </>;
