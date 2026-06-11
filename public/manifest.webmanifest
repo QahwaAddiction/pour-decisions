@@ -1,13 +1,13 @@
 {
-  "name": "Pour Decisions",
-  "short_name": "Pour Decisions",
-  "description": "A pour-over coffee brewing assistant.",
+  "name": "CalibratedPours",
+  "short_name": "CalibratedPours",
+  "description": "Precision pour-over recipes.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FAF9F5",
-  "theme_color": "#6B5FA8",
+  "background_color": "#FFFFFF",
+  "theme_color": "#7B2FBE",
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
