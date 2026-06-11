@@ -1,5 +1,5 @@
-// Minimal offline-first service worker for Pour Decisions.
-const CACHE = "pour-decisions-v1";
+// Minimal offline-first service worker for CalibratedPours.
+const CACHE = "calibratedpours-v1";
 
 self.addEventListener("install", (e) => {
   self.skipWaiting();
