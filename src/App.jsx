@@ -6,7 +6,6 @@ const C = {
   accent:"#7B2FBE", accent2:"#C44FA8", gold:"#C9A227", white:"#FFFFFF",
 };
 const F = "'Inter', sans-serif";
-const FD = "'Fraunces', 'Inter', serif";
 
 // ── LANGUAGE (en / ar) ───────────────────────────────────────────
 let LANG="en";
@@ -15,9 +14,9 @@ const AR={
   "☆ Bean Journal":"☆ سجلّ البن","Bean Journal":"سجلّ البن","Bean\nJournal":"سجلّ\nالبن",
   "Tell me about\nthe bean":"حدّثني عن\nالبن","Choose your\ntaste profile":"اختر\nطابع المذاق",
   "Configure\nthe machine":"جهّز\nالماكينة","How are you\nbrewing it":"كيف\nستحضّرها؟",
-  "Share\nyour brew":"شارك\nقهوتك","How did\nit taste?":"كيف كان\nالطعم؟",
+  "Share\nyour brew":"شارك\nقهوتك","How did\nit taste?":"كيف كان\nالطعم؟","Export to\nxBloom":"صدّر إلى\nxBloom",
   "Bean":"البن","Goal":"الهدف","Brew":"التحضير","Recipe":"الوصفة",
-  "Coffee Name":"اسم القهوة","Origin":"المنشأ","Processing Method":"طريقة المعالجة","Roast Level":"درجة التحميص","required":"مطلوب","optional · improves accuracy":"اختياري · يحسّن الدقة",
+  "Coffee Name":"اسم القهوة","Origin":"المنشأ","Processing Method *":"طريقة المعالجة *","Roast Level *":"درجة التحميص *",
   "Roast Date":"تاريخ التحميص","Days Off Roast":"أيام منذ التحميص","Status":"الحالة","More Details":"تفاصيل إضافية",
   "Region":"المنطقة","Altitude (masl)":"الارتفاع (متر)","Variety":"السلالة","Tasting Notes (from bag)":"إيحاءات المذاق (من الكيس)",
   "or enter manually":"أو أدخل البيانات يدوياً","Paste the roaster's description":"الصق وصف المحمصة",
@@ -33,16 +32,18 @@ const AR={
   "Dripper":"القمع","Coffee : Water":"قهوة : ماء","Grind Size":"درجة الطحن","Grinder Speed":"سرعة المطحنة",
   "Temperature":"الحرارة","Expected Cup":"الفنجان المتوقع","Agitation":"التحريك","Bloom":"الإزهار","Brew Time":"وقت التحضير",
   "Water":"الماء","Hot Water":"الماء الساخن","Ice":"الثلج","Rinse & preheat":"اشطف وسخّن",
-  "Share Card":"بطاقة المشاركة","Brewed it?":"حضّرتها؟","Open Coffee Doctor":"افتح طبيب القهوة",
-  "Rate this brew":"قيّم هذه القهوة","Save to Journal":"احفظ في السجل","Copy":"نسخ","Copy Recipe Text":"انسخ نص الوصفة",
+  "Share Card":"بطاقة المشاركة","Export":"تصدير","Brewed it?":"حضّرتها؟","Open Coffee Doctor":"افتح طبيب القهوة",
+  "Rate this brew":"قيّم هذه القهوة","Save to Journal":"احفظ في السجل","Copy":"نسخ","Copy Full Recipe":"انسخ الوصفة كاملة","Copy Recipe Text":"انسخ نص الوصفة",
   "Brew Notes":"ملاحظات التحضير","Coffee Fact":"معلومة قهوة","Brewer's Tip":"نصيحة المحضّر",
   "Clarity":"صفاء","Sweetness":"حلاوة","Balanced":"متوازن","Body":"قوام","Acidity":"حموضة",
   "Light":"فاتح","Light-Med":"فاتح-وسط","Medium":"وسط","Med-Dark":"وسط-غامق","Dark":"غامق",
   "1:3 (recommended)":"1:3 (موصى بها)","Rinse first":"اشطفه أولاً","No rinse needed":"لا يحتاج شطفاً",
   "Calibrating":"جاري المعايرة","Reading the bean":"قراءة البن","Balancing extraction":"موازنة الاستخلاص","Locking temperature":"تثبيت الحرارة",
   "What do you want more of?":"ماذا تريد أكثر؟","Or what went wrong?":"أو ما الذي لم يعجبك؟",
-  "Coffee Doctor":"طبيب القهوة","Home":"الرئيسية","About":"حول","Close":"إغلاق","Delete":"حذف",
+  "Coffee Doctor":"طبيب القهوة","Home":"الرئيسية","Journal":"السجلّ","About":"حول","Close":"إغلاق","Delete":"حذف",
   "Select processing":"اختر طريقة المعالجة","Select brewer":"اختر الأداة","‹ Home":"‹ الرئيسية","‹ Recipe":"‹ الوصفة",
+  "Pour":"صبّة","Card Dose":"جرعة البطاقة","Card Ratio":"نسبة البطاقة","Cup Type":"نوع الكوب",
+  "Send to xBloom":"أرسل إلى xBloom","Show card bytes":"عرض بيانات البطاقة","Hide card bytes":"إخفاء بيانات البطاقة",
   "Same bean, different cup. Your goal tells the engine what to chase — it shifts the grind, water temperature, bloom time and agitation to steer the extraction toward the flavours you actually want.":"نفس البن، فنجان مختلف. هدفك يخبر المحرّك بما يطارده — فيغيّر الطحن وحرارة الماء وزمن الإزهار والتحريك ليوجّه الاستخلاص نحو النكهات التي تريدها فعلاً.",
   "Distinct, separated flavours — tea-like and delicate. Coarser grind, gentler pours, faster drawdown.":"نكهات واضحة ومنفصلة — شبيهة بالشاي ورقيقة. طحن أخشن وصبّ ألطف وتصفية أسرع.",
   "Round, caramel-forward sweetness. Slightly finer grind and longer contact to develop the sugars.":"حلاوة دائرية بطابع الكراميل. طحن أنعم قليلاً وتلامس أطول لتطوير السكريات.",
@@ -478,6 +479,62 @@ function recipeText(mode,form,r){
   return L.join("\n");
 }
 
+// ── XPOD CARD ENCODER (ported from XBRecipeWriterPlus 2.2.0) ─────
+// Builds the exact byte payload an xBloom NFC card stores after its
+// 32-byte signature: XID(7) · cupType(1) · pourCount<<3(1) · 8 bytes
+// per pour · grind-40(1) · ratio(1) · CRC-8/MAXIM(1).
+// Cards lock the machine dose to 15g and only take whole-number ratios,
+// so the recipe is rescaled to 15g × integer ratio (same water, same cup).
+const CRC8_TABLE=[
+  0x00,0x5E,0xBC,0xE2,0x61,0x3F,0xDD,0x83,0xC2,0x9C,0x7E,0x20,0xA3,0xFD,0x1F,0x41,
+  0x9D,0xC3,0x21,0x7F,0xFC,0xA2,0x40,0x1E,0x5F,0x01,0xE3,0xBD,0x3E,0x60,0x82,0xDC,
+  0x23,0x7D,0x9F,0xC1,0x42,0x1C,0xFE,0xA0,0xE1,0xBF,0x5D,0x03,0x80,0xDE,0x3C,0x62,
+  0xBE,0xE0,0x02,0x5C,0xDF,0x81,0x63,0x3D,0x7C,0x22,0xC0,0x9E,0x1D,0x43,0xA1,0xFF,
+  0x46,0x18,0xFA,0xA4,0x27,0x79,0x9B,0xC5,0x84,0xDA,0x38,0x66,0xE5,0xBB,0x59,0x07,
+  0xDB,0x85,0x67,0x39,0xBA,0xE4,0x06,0x58,0x19,0x47,0xA5,0xFB,0x78,0x26,0xC4,0x9A,
+  0x65,0x3B,0xD9,0x87,0x04,0x5A,0xB8,0xE6,0xA7,0xF9,0x1B,0x45,0xC6,0x98,0x7A,0x24,
+  0xF8,0xA6,0x44,0x1A,0x99,0xC7,0x25,0x7B,0x3A,0x64,0x86,0xD8,0x5B,0x05,0xE7,0xB9,
+  0x8C,0xD2,0x30,0x6E,0xED,0xB3,0x51,0x0F,0x4E,0x10,0xF2,0xAC,0x2F,0x71,0x93,0xCD,
+  0x11,0x4F,0xAD,0xF3,0x70,0x2E,0xCC,0x92,0xD3,0x8D,0x6F,0x31,0xB2,0xEC,0x0E,0x50,
+  0xAF,0xF1,0x13,0x4D,0xCE,0x90,0x72,0x2C,0x6D,0x33,0xD1,0x8F,0x0C,0x52,0xB0,0xEE,
+  0x32,0x6C,0x8E,0xD0,0x53,0x0D,0xEF,0xB1,0xF0,0xAE,0x4C,0x12,0x91,0xCF,0x2D,0x73,
+  0xCA,0x94,0x76,0x28,0xAB,0xF5,0x17,0x49,0x08,0x56,0xB4,0xEA,0x69,0x37,0xD5,0x8B,
+  0x57,0x09,0xEB,0xB5,0x36,0x68,0x8A,0xD4,0x95,0xCB,0x29,0x77,0xF4,0xAA,0x48,0x16,
+  0xE9,0xB7,0x55,0x0B,0x88,0xD6,0x34,0x6A,0x2B,0x75,0x97,0xC9,0x4A,0x14,0xF6,0xA8,
+  0x74,0x2A,0xC8,0x96,0x15,0x4B,0xA9,0xF7,0xB6,0xE8,0x0A,0x54,0xD7,0x89,0x6B,0x35,
+];
+const crc8=arr=>{let c=0;for(const b of arr)c=CRC8_TABLE[(c^b)&0xff];return c;};
+const PATTERN_BYTE={Centered:0,Circular:1,Spiral:2};
+function buildCardData(r){
+  const pours=r.pours||[];
+  if(!pours.length) return null;
+  const cardRatio=Math.max(1,Math.round(r.totalVolume/15));
+  const cardTotal=15*cardRatio;                       // machine verifies sum(pours) === 15 × ratio
+  const sum=pours.reduce((s,p)=>s+p.volume,0)||1;
+  const vols=pours.map(p=>Math.round(p.volume*cardTotal/sum));
+  vols[vols.length-1]+=cardTotal-vols.reduce((a,b)=>a+b,0);
+  const grindClamped=r.grindSize<40;
+  const grindByte=clamp(r.grindSize,40,80)-40;        // card stores grind − 40 (byte 41 = grinder off)
+  const data=[0,0,0,0,0,0,0];                          // XID: blank (custom recipe)
+  data.push(0x01);                                     // cup type: Other (overflow protection off → no waits)
+  data.push(pours.length<<3);
+  pours.forEach((p,i)=>{
+    data.push(vols[i]);
+    data.push(p.temperature);
+    data.push(PATTERN_BYTE[p.pourType]??1);
+    data.push((p.agitationBefore?1:0)|(p.agitationAfter?2:0));
+    const pause=Math.min(p.pause||0,255);
+    data.push(pause===0?0:(256-pause)&0xFF);
+    data.push(i===0?15:0);                             // dose byte lives in the first pour
+    data.push(i===0?r.rpm:0);                          // RPM byte lives in the first pour
+    data.push(Math.round(p.flowRate*10));              // flow stored ×10 (valid 30–35)
+  });
+  data.push(grindByte);
+  data.push(cardRatio);
+  data.push(crc8(data));
+  return {bytes:data,cardRatio,cardTotal,vols,grindClamped,grindUsed:clamp(r.grindSize,40,80)};
+}
+const cardHex=a=>a.map(b=>(b&0xFF).toString(16).padStart(2,"0").toUpperCase()).join(" ");
 
 // ── LOCALSTORAGE (works everywhere — Claude, browsers, Capacitor) ─
 const bkey=b=>"pd_dialin:"+(b||"x").toLowerCase().replace(/[^a-z0-9]/g,"_").slice(0,40);
@@ -532,7 +589,7 @@ function Calibrating({onDone}){
   const letters=Math.min(tick,word.length);
   const dots=tick>word.length?(Math.floor((tick-word.length)/3)%4):0;
   return <div className="anim" style={{maxWidth:600,margin:"0 auto",padding:"130px 22px 0",textAlign:"center"}}>
-    <div style={{fontFamily:FD,fontWeight:900,fontSize:30,color:C.ink,letterSpacing:"0.06em",textTransform:"uppercase",minHeight:40}}>
+    <div style={{fontFamily:F,fontWeight:900,fontSize:30,color:C.ink,letterSpacing:"0.06em",textTransform:"uppercase",minHeight:40}}>
       {word.slice(0,letters)}{".".repeat(dots)}<span style={{opacity:tick%2===0?1:0,color:C.accent}}>_</span>
     </div>
     <div style={{marginTop:28,display:"flex",flexDirection:"column",gap:10,minHeight:80}}>
@@ -550,12 +607,12 @@ function ProgressSteps({current}){
         return(
           <div key={s} style={{display:"flex",alignItems:"center",flex:i<3?1:"none"}}>
             <div style={{display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
-              <div style={{width:20,height:20,borderRadius:7,background:act||done?C.ink:C.line,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <span style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:8,color:act||done?C.white:C.muted}}>{"0"+n}</span>
+              <div style={{width:20,height:20,borderRadius:7,background:act||done?"#0A0A0A":"#E4E0D6",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:8,color:act||done?"#FFFFFF":"#8C8A84"}}>{"0"+n}</span>
               </div>
-              <span style={{fontFamily:"'Inter',sans-serif",fontWeight:act?700:500,fontSize:9,color:act?C.ink:C.muted,textTransform:"uppercase",letterSpacing:"0.08em"}}>{t(s)}</span>
+              <span style={{fontFamily:"'Inter',sans-serif",fontWeight:act?700:500,fontSize:9,color:act?"#0A0A0A":"#8C8A84",textTransform:"uppercase",letterSpacing:"0.08em"}}>{t(s)}</span>
             </div>
-            {i<3&&<div style={{flex:1,height:1.5,background:done?C.ink:C.line,margin:"0 6px",minWidth:6}}/>}
+            {i<3&&<div style={{flex:1,height:1.5,background:done?"#0A0A0A":"#E4E0D6",margin:"0 6px",minWidth:6}}/>}
           </div>
         );
       })}
@@ -565,7 +622,7 @@ function ProgressSteps({current}){
 
 // ── CSS ──────────────────────────────────────────────────────────
 const CSS=(
-  "@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Inter:wght@400;500;600;700;800;900&display=swap');"+
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');"+
   "*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}"+
   "html,body{background:#FAF9F5;min-height:100vh;-webkit-font-smoothing:antialiased}"+
   "input::placeholder{color:#C0BDB7;font-family:'Inter',sans-serif;font-weight:500}"+
@@ -573,13 +630,52 @@ const CSS=(
   "input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}"+
   "input[type=date]{font-family:'Inter',sans-serif;font-weight:600;color:#0A0A0A}"+
   "select option{background:#fff;color:#0A0A0A}"+
+  "input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;background:rgba(150,130,210,0.25);border-radius:3px;outline:none;cursor:pointer}"+
+  "input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid rgba(123,47,190,0.45);box-shadow:0 2px 10px rgba(94,68,180,0.35);cursor:pointer}"+
+  "input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid rgba(123,47,190,0.45);box-shadow:0 2px 10px rgba(94,68,180,0.35);cursor:pointer}"+
   "@keyframes b1{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}20%{transform:translate(-42%,-58%) scale(1.12) rotate(25deg)}40%{transform:translate(-56%,-42%) scale(0.9) rotate(-18deg)}60%{transform:translate(-44%,-56%) scale(1.08) rotate(35deg)}80%{transform:translate(-54%,-44%) scale(0.95) rotate(-12deg)}}"+
   "@keyframes b2{0%,100%{transform:translate(-30%,-65%) scale(0.82)}33%{transform:translate(-70%,-35%) scale(1.05)}66%{transform:translate(-50%,-50%) scale(0.9)}}"+
   "@keyframes b3{0%,100%{transform:translate(-75%,-30%) scale(0.68)}50%{transform:translate(-25%,-70%) scale(0.88)}}"+
   "@keyframes b4{0%,100%{transform:translate(-20%,-20%) scale(0.75)}40%{transform:translate(-80%,-80%) scale(0.95)}70%{transform:translate(-60%,-40%) scale(0.8)}}"+
   "@keyframes b5{0%,100%{transform:translate(-85%,-55%) scale(0.6)}50%{transform:translate(-15%,-45%) scale(0.78)}}"+
   "@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}"+
-  ".anim{animation:rise 0.4s cubic-bezier(.16,1,.3,1) both}"
+  ".anim{animation:rise 0.4s cubic-bezier(.16,1,.3,1) both}"+
+  /* ── liquid glass system ── */
+  ".lg{position:relative;isolation:isolate;border:none;background:transparent;cursor:pointer;transition:transform .45s cubic-bezier(0.175,0.885,0.32,1.6)}"+
+  ".lg:active{transform:scale(0.96)}"+
+  "@media(hover:hover){.lg:not(:disabled):hover{transform:scale(1.025)}}"+
+  ".lg:disabled{opacity:0.45;cursor:not-allowed}"+
+  ".lg-lens{position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;"+
+    "backdrop-filter:blur(8px) url(#liquid-glass) saturate(160%);"+
+    "-webkit-backdrop-filter:blur(8px) saturate(160%);"+
+    "box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10),inset 1.8px 3px 0px -2px rgba(255,255,255,0.90),inset -2px -2px 0px -2px rgba(255,255,255,0.80),inset -3px -8px 1px -6px rgba(255,255,255,0.60),inset -0.3px -1px 4px 0px rgba(30,10,60,0.12),inset -1.5px 2.5px 0px -2px rgba(30,10,60,0.20),inset 0px 3px 4px -2px rgba(30,10,60,0.20),inset 2px -6.5px 1px -4px rgba(30,10,60,0.10),0px 1px 5px 0px rgba(30,10,60,0.10),0px 6px 16px 0px rgba(94,68,180,0.10);"+
+    "transition:background-color .4s cubic-bezier(1,0,0.4,1)}"+
+  ".lg-lite{backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%)}"+
+  ".lg-text{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-shadow:0 1px 2px rgba(255,255,255,0.30)}"+
+  /* ── landing intro ── */
+  ".intro-title{transition:transform .85s cubic-bezier(.16,1,.3,1)}"+
+  ".intro-item{opacity:0;transform:translateY(22px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}"+
+  ".intro-item.in{opacity:1;transform:translateY(0)}"+
+  ".xfade{transition:opacity .45s ease}"+
+  /* ── display-card edit stack ── */
+  ".dstack{display:grid;grid-template-areas:'stack';place-items:center;padding:30px 0 150px}"+
+  ".dcard{grid-area:stack;width:min(300px,76vw);height:128px;border-radius:18px;position:relative;isolation:isolate;cursor:pointer;"+
+    "transform:skewY(-8deg) translate(var(--dx,0px),var(--dy,0px));transition:transform .6s cubic-bezier(.16,1,.3,1)}"+
+  "@media(hover:hover){.dcard:hover{transform:skewY(-8deg) translate(var(--dx,0px),calc(var(--dy,0px) - 16px))}}"+
+  ".dcard:active{transform:skewY(-8deg) translate(var(--dx,0px),calc(var(--dy,0px) - 6px)) scale(0.98)}"+
+  ".dcard .dveil{position:absolute;inset:0;border-radius:inherit;background:rgba(250,249,245,0.74);transition:opacity .6s ease;pointer-events:none;z-index:2}"+
+  "@media(hover:hover){.dcard:hover .dveil{opacity:0}}"+
+  ".dcard .dfade{position:absolute;top:-5%;height:110%;right:-4px;width:60%;background:linear-gradient(to left,#FAF9F5 8%,transparent);pointer-events:none;z-index:3}"+
+  /* ── animated gradient mesh (share card) ── */
+  "@keyframes meshmove{"+
+    "0%,100%{transform:translate(calc(var(--tx-1)*100%),calc(var(--ty-1)*100%))}"+
+    "25%{transform:translate(calc(var(--tx-2)*100%),calc(var(--ty-2)*100%))}"+
+    "50%{transform:translate(calc(var(--tx-3)*100%),calc(var(--ty-3)*100%))}"+
+    "75%{transform:translate(calc(var(--tx-4)*100%),calc(var(--ty-4)*100%))}}"+
+  ".mesh{position:absolute;border-radius:50%;filter:blur(22px);pointer-events:none;animation:meshmove var(--dur,12s) ease-in-out infinite}"+
+  /* ── glass dock ── */
+  ".dock-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:64px;padding:7px 10px;border-radius:999px}"+
+  "@media(prefers-reduced-motion:reduce){.lg,.intro-title,.intro-item,.dcard{transition:none}.anim{animation:none}.mesh{animation:none}}"
 );
 
 // ── BLOBS (5 colours, independent motion) ─────────────────────────
@@ -587,34 +683,146 @@ function Blobs(){
   const b={position:"absolute",borderRadius:"50%",pointerEvents:"none"};
   return(
     <div style={{position:"fixed",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
-      <div style={{...b,top:"35%",left:"50%",width:580,height:580,background:"radial-gradient(circle,rgba(140,110,210,0.50) 0%,rgba(107,95,168,0.31) 40%,transparent 70%)",filter:"blur(72px)",animation:"b1 15s ease-in-out infinite"}}/>
-      <div style={{...b,top:"20%",left:"70%",width:360,height:360,background:"radial-gradient(circle,rgba(255,80,160,0.42) 0%,rgba(220,60,140,0.26) 45%,transparent 70%)",filter:"blur(60px)",animation:"b2 11s ease-in-out infinite"}}/>
-      <div style={{...b,top:"60%",left:"20%",width:320,height:320,background:"radial-gradient(circle,rgba(200,50,180,0.38) 0%,rgba(170,40,160,0.24) 45%,transparent 70%)",filter:"blur(56px)",animation:"b3 9s ease-in-out infinite"}}/>
-      <div style={{...b,top:"15%",left:"25%",width:300,height:300,background:"radial-gradient(circle,rgba(255,200,50,0.36) 0%,rgba(230,170,30,0.22) 45%,transparent 70%)",filter:"blur(58px)",animation:"b4 13s ease-in-out infinite"}}/>
-      <div style={{...b,top:"70%",left:"68%",width:260,height:260,background:"radial-gradient(circle,rgba(80,130,240,0.34) 0%,rgba(60,110,220,0.20) 45%,transparent 70%)",filter:"blur(52px)",animation:"b5 8s ease-in-out infinite"}}/>
+      <div style={{...b,top:"35%",left:"50%",width:580,height:580,background:"radial-gradient(circle,rgba(140,110,210,0.44) 0%,rgba(107,95,168,0.25) 40%,transparent 70%)",filter:"blur(72px)",animation:"b1 15s ease-in-out infinite"}}/>
+      <div style={{...b,top:"20%",left:"70%",width:360,height:360,background:"radial-gradient(circle,rgba(255,80,160,0.36) 0%,rgba(220,60,140,0.2) 45%,transparent 70%)",filter:"blur(60px)",animation:"b2 11s ease-in-out infinite"}}/>
+      <div style={{...b,top:"60%",left:"20%",width:320,height:320,background:"radial-gradient(circle,rgba(200,50,180,0.32) 0%,rgba(170,40,160,0.18) 45%,transparent 70%)",filter:"blur(56px)",animation:"b3 9s ease-in-out infinite"}}/>
+      <div style={{...b,top:"15%",left:"25%",width:300,height:300,background:"radial-gradient(circle,rgba(255,200,50,0.30) 0%,rgba(230,170,30,0.16) 45%,transparent 70%)",filter:"blur(58px)",animation:"b4 13s ease-in-out infinite"}}/>
+      <div style={{...b,top:"70%",left:"68%",width:260,height:260,background:"radial-gradient(circle,rgba(80,130,240,0.28) 0%,rgba(60,110,220,0.14) 45%,transparent 70%)",filter:"blur(52px)",animation:"b5 8s ease-in-out infinite"}}/>
     </div>
   );
 }
 
-// ── LIQUID GLASS ──────────────────────────────────────────────────
-const glass=(r=24,o={})=>({border:"1px solid rgba(255,255,255,0.7)",borderRadius:r,
-  backdropFilter:"blur(28px) saturate(180%)",WebkitBackdropFilter:"blur(28px) saturate(180%)",
-  boxShadow:"0 12px 36px rgba(94,68,180,0.16), inset 0 1px 0 rgba(255,255,255,0.85)",overflow:"hidden",...o});
-const glassThin=(r=16,o={})=>({border:"1px solid rgba(150,130,210,0.28)",borderRadius:r,
-  backdropFilter:"blur(14px) saturate(160%)",WebkitBackdropFilter:"blur(14px) saturate(160%)",
-  boxShadow:"inset 0 1px 0 rgba(255,255,255,0.55)",...o});
-const glassAccent=(border,r=20,o={})=>({border:"1.5px solid "+border,borderRadius:r,
-  backdropFilter:"blur(24px) saturate(170%)",WebkitBackdropFilter:"blur(24px) saturate(170%)",
-  boxShadow:"0 8px 24px rgba(123,47,190,0.14), inset 0 1px 0 rgba(255,255,255,0.7)",...o});
+// ── LIQUID GLASS SYSTEM ───────────────────────────────────────────
+// WebP normal map — drives the SVG displacement refraction (Chrome/Edge).
+// Safari falls back to plain blur via -webkit-backdrop-filter.
+const LIQUID_MAP = "data:image/webp;base64,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";
 
-// ── UI ATOMS ──────────────────────────────────────────────────────
-function Lbl({c,req,hint}){
-  return <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:8}}>
-    <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted}}>{t(c)}</span>
-    {req&&<span style={{fontFamily:F,fontWeight:700,fontSize:8,letterSpacing:"0.08em",textTransform:"uppercase",color:C.accent,background:"rgba(123,47,190,0.08)",border:"1px solid rgba(123,47,190,0.30)",borderRadius:999,padding:"2px 7px",lineHeight:1.4}}>{t("required")}</span>}
-    {hint&&<span style={{fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,textTransform:"none",letterSpacing:0}}>{t(hint)}</span>}
+function GlassFX(){
+  return <svg style={{position:"absolute",width:0,height:0,overflow:"hidden",pointerEvents:"none"}} aria-hidden="true">
+    <defs>
+      <filter id="liquid-glass" primitiveUnits="objectBoundingBox">
+        <feImage result="map" width="100%" height="100%" x="0" y="0" href={LIQUID_MAP} preserveAspectRatio="none"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.01" result="blur"/>
+        <feDisplacementMap in="blur" in2="map" scale="0.5" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="threshold">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"/>
+      </filter>
+    </defs>
+  </svg>;
+}
+
+// Liquid glass button — lens layer refracts the blobs behind it, content floats above.
+function GlassBtn({onClick,disabled,children,dark,tint,lite,radius=999,style,lensStyle,className}){
+  const bg=tint||(dark?"rgba(30,10,60,0.82)":"rgba(255,255,255,0.16)");
+  return <button className={"lg"+(className?" "+className:"")} onClick={onClick} disabled={disabled} style={{borderRadius:radius,...style}}>
+    <span className={"lg-lens"+(lite?" lg-lite":"")} style={{backgroundColor:bg,...lensStyle}}/>
+    <span className="lg-text" style={dark?{textShadow:"0 1px 2px rgba(0,0,0,0.35)"}:undefined}>{children}</span>
+  </button>;
+}
+
+// ── MORPHING TEXT (Calibrated ⇄ Pours) ───────────────────────────
+const MORPH_TIME=1.4, MORPH_HOLD=0.7;
+function MorphTitle({texts,onDone,fontSize=46}){
+  const t1=useRef(null),t2=useRef(null),raf=useRef(0),done=useRef(false);
+  useEffect(()=>{
+    let idx=0,morph=0,cool=MORPH_HOLD,last=Date.now();
+    const setPair=()=>{ if(t1.current&&t2.current){ t1.current.textContent=texts[idx%texts.length]; t2.current.textContent=texts[(idx+1)%texts.length]; } };
+    const styles=f=>{ const a=t1.current,b=t2.current; if(!a||!b) return;
+      b.style.filter=`blur(${Math.min(8/f-8,100)}px)`; b.style.opacity=`${Math.pow(f,0.4)*100}%`;
+      const inv=1-f;
+      a.style.filter=`blur(${Math.min(8/inv-8,100)}px)`; a.style.opacity=`${Math.pow(inv,0.4)*100}%`;
+    };
+    const finish=()=>{ if(done.current) return; done.current=true;
+      const a=t1.current,b=t2.current;
+      if(a&&b){ b.style.filter="none"; b.style.opacity="100%"; a.style.filter="none"; a.style.opacity="0%"; }
+      onDone&&onDone();
+    };
+    setPair();
+    if(t1.current&&t2.current){ t1.current.style.opacity="100%"; t1.current.style.filter="none"; t2.current.style.opacity="0%"; }
+    let finishId=0;
+    const tick=()=>{
+      raf.current=requestAnimationFrame(tick);
+      const now=Date.now(),dt=(now-last)/1000; last=now;
+      cool-=dt;
+      if(cool>0) return;
+      morph+=dt;
+      let f=Math.min(morph/MORPH_TIME,1);
+      styles(f);
+      if(f>=1){
+        if(idx>=texts.length-2){ cancelAnimationFrame(raf.current); finishId=setTimeout(finish,MORPH_HOLD*1000); return; }
+        idx++; morph=0; cool=MORPH_HOLD; setPair();
+      }
+    };
+    raf.current=requestAnimationFrame(tick);
+    return ()=>{ cancelAnimationFrame(raf.current); clearTimeout(finishId); };
+  },[]);
+  const span={position:"absolute",left:0,right:0,top:0,margin:"auto",display:"inline-block",width:"100%",textAlign:"center",
+    fontFamily:F,fontWeight:900,fontSize,lineHeight:1,color:C.ink,letterSpacing:"-0.03em",textTransform:"uppercase"};
+  return <div style={{position:"relative",height:fontSize+10,width:"100%",filter:"url(#threshold) blur(0.6px)"}}>
+    <span ref={t1} style={span}/>
+    <span ref={t2} style={span}/>
   </div>;
 }
+
+// ── EDIT STACK (stacked display cards) ───────────────────────────
+function EditStack({items,onPick}){
+  const offs=[{dx:"-14px",dy:"0px"},{dx:"0px",dy:"52px"},{dx:"14px",dy:"104px"}];
+  return <div className="dstack">
+    {items.map((it,i)=>{
+      const o=offs[i]||offs[2], front=i===items.length-1;
+      return <div key={it.k} className="dcard" role="button" tabIndex={0}
+        style={{"--dx":o.dx,"--dy":o.dy,zIndex:i+1}}
+        onClick={()=>onPick(it.k)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" ")onPick(it.k);}}>
+        <span className="lg-lens" style={{backgroundColor:"rgba(255,255,255,0.34)",borderRadius:18}}/>
+        {!front&&<span className="dveil"/>}
+        <span className="dfade"/>
+        <div style={{position:"relative",zIndex:1,height:"100%",padding:"14px 18px",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:9}}>
+            <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:26,height:26,borderRadius:999,background:"rgba(30,10,60,0.9)",color:"#fff",flexShrink:0}}>{it.icon}</span>
+            <span style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.accent}}>{it.title}</span>
+          </div>
+          <div style={{fontFamily:F,fontWeight:700,fontSize:16,color:C.ink,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{it.desc}</div>
+          <div style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.muted}}>{it.meta}</div>
+        </div>
+      </div>;
+    })}
+  </div>;
+}
+const Ic={
+  bean:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><ellipse cx="12" cy="12" rx="7.5" ry="10" transform="rotate(38 12 12)"/><path d="M8.5 6.5c4 3 4 8 7 11" transform="rotate(2 12 12)"/></svg>,
+  goal:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>,
+  brew:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M4 6h12M4 12h16M4 18h10"/><circle cx="18" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>,
+  home:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></svg>,
+  journal:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v18H7.5A2.5 2.5 0 0 0 5 22z"/><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19"/><path d="M10 7h5"/></svg>,
+  cup:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9.5h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 4.5c0-1 .8-1 .8-2M12 4.5c0-1 .8-1 .8-2"/></svg>,
+};
+
+// ── GLASS DOCK (floating bottom nav) ─────────────────────────────
+function GlassDock({view,hasRecipe,onHome,onJournal,onRecipe}){
+  const recipeViews=["result","share","doctor","export","edit"];
+  const items=[
+    {k:"home",label:t("Home"),icon:Ic.home,on:onHome,active:view==="landing"},
+    {k:"journal",label:t("Journal"),icon:Ic.journal,on:onJournal,active:view==="saved"},
+    {k:"recipe",label:t("Recipe"),icon:Ic.cup,on:onRecipe,active:recipeViews.includes(view),disabled:!hasRecipe},
+  ];
+  return <div style={{position:"fixed",left:0,right:0,bottom:"max(14px, env(safe-area-inset-bottom))",display:"flex",justifyContent:"center",zIndex:40,pointerEvents:"none"}}>
+    <div style={{pointerEvents:"auto",position:"relative",isolation:"isolate",display:"flex",gap:4,padding:"7px 9px",borderRadius:999}}>
+      <span className="lg-lens" style={{backgroundColor:"rgba(255,255,255,0.34)",borderRadius:999}}/>
+      {items.map(it=>(
+        <button key={it.k} className="lg dock-item" onClick={it.on} disabled={it.disabled} aria-label={it.label}
+          style={{color:it.active?C.white:C.stone}}>
+          <span className="lg-lens lg-lite" style={{backgroundColor:it.active?"rgba(30,10,60,0.88)":"transparent",boxShadow:it.active?undefined:"none"}}/>
+          <span style={{position:"relative",zIndex:1,display:"flex"}}>{it.icon}</span>
+          <span style={{position:"relative",zIndex:1,fontFamily:F,fontWeight:700,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase"}}>{it.label}</span>
+        </button>
+      ))}
+    </div>
+  </div>;
+}
+
+// ── UI ATOMS ──────────────────────────────────────────────────────
+function Lbl({c}){ return <div style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted,marginBottom:8}}>{t(c)}</div>; }
 function TIn({value,onChange,placeholder,type}){
   const [f,sf]=useState(false);
   return <input value={value} onChange={onChange} placeholder={placeholder} type={type||"text"}
@@ -632,51 +840,43 @@ function Sel({value,onChange,options,placeholder}){
   </div>;
 }
 function Seg({options,value,onChange,small}){
-  return <div style={{display:"flex",...glass(22)}}>
+  return <div style={{position:"relative",isolation:"isolate",display:"flex",borderRadius:999,overflow:"hidden"}}>
+    <span className="lg-lens lg-lite" style={{backgroundColor:"rgba(255,255,255,0.20)",borderRadius:999}}/>
     {options.map((o,i)=>{
       const v=typeof o==="object"?o.value:o, l=typeof o==="object"?o.label:t(o);
       return(
       <button key={v} onClick={()=>onChange(v)}
-        style={{flex:1,padding:small?"9px 4px":"11px 6px",background:value===v?C.ink:"transparent",border:"none",borderLeft:i>0?"1px solid rgba(120,100,190,0.25)":"none",fontFamily:F,fontWeight:700,fontSize:small?10:11,letterSpacing:"0.04em",textTransform:"uppercase",color:value===v?C.white:C.stone,cursor:"pointer",transition:"all .12s"}}>
+        style={{flex:1,position:"relative",zIndex:1,padding:small?"9px 4px":"11px 6px",background:value===v?"rgba(30,10,60,0.88)":"transparent",border:"none",borderRadius:999,fontFamily:F,fontWeight:700,fontSize:small?10:11,letterSpacing:"0.04em",textTransform:"uppercase",color:value===v?C.white:C.stone,cursor:"pointer",transition:"all .25s cubic-bezier(.16,1,.3,1)",boxShadow:value===v?"inset 1.5px 2px 0px -1px rgba(255,255,255,0.35), 0 2px 8px rgba(30,10,60,0.25)":"none"}}>
         {l}
       </button>
     );})}
   </div>;
 }
 function Pill({active,onClick,children}){
-  return <button onClick={onClick} style={{border:"1px solid "+(active?"rgba(30,10,60,0.85)":"rgba(255,255,255,0.7)"),borderRadius:999,backdropFilter:"blur(16px) saturate(170%)",WebkitBackdropFilter:"blur(16px) saturate(170%)",background:active?C.ink:"rgba(255,255,255,0.45)",boxShadow:active?"0 6px 18px rgba(30,10,60,0.22)":"0 4px 14px rgba(94,68,180,0.10), inset 0 1px 0 rgba(255,255,255,0.8)",padding:"7px 14px",fontFamily:F,fontWeight:600,fontSize:12,color:active?C.white:C.stone,cursor:"pointer",transition:"all .12s",whiteSpace:"nowrap"}}>{children}</button>;
+  return <button className="lg" onClick={onClick} style={{borderRadius:999,padding:"7px 14px",fontFamily:F,fontWeight:600,fontSize:12,color:active?C.white:C.stone,whiteSpace:"nowrap"}}>
+    <span className="lg-lens lg-lite" style={{backgroundColor:active?"rgba(30,10,60,0.88)":"rgba(255,255,255,0.14)"}}/>
+    <span style={{position:"relative",zIndex:1}}>{children}</span>
+  </button>;
 }
-function BtnP({onClick,disabled,children}){ return <button onClick={onClick} disabled={disabled} style={{flex:2,padding:"15px",background:disabled?C.line:C.ink,border:"none",borderRadius:18,color:disabled?C.muted:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:disabled?"not-allowed":"pointer",boxShadow:disabled?"none":"0 10px 26px rgba(30,10,60,0.25)"}}>{typeof children==="string"?t(children):children}</button>; }
-function BtnG({onClick,children}){ return <button onClick={onClick} style={{flex:1,padding:"15px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:600,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>{typeof children==="string"?t(children):children}</button>; }
-function FillPill({label,value,min,max,step,unit,onChange,ariaLabel}){
-  const st=step||1;
-  const v=clamp(parseFloat(value)||parseFloat(min)||0,min,max),isRatio=unit==="ratio";
-  const pct=max>min?(v-min)/(max-min):0;
-  const ref=useRef(null),drag=useRef(false);
-  const snap=n=>String(Math.round(clamp(Math.round(n/st)*st,min,max)*10)/10);
-  const setFromX=x=>{
-    const r=ref.current.getBoundingClientRect();
-    const p=clamp((x-r.left)/r.width,0,1);
-    onChange(snap(min+p*(max-min)));
-  };
-  const down=e=>{drag.current=true;e.currentTarget.setPointerCapture(e.pointerId);setFromX(e.clientX);};
-  const move=e=>{if(drag.current)setFromX(e.clientX);};
-  const up=()=>{drag.current=false;};
-  const key=e=>{
-    if(e.key==="ArrowLeft"||e.key==="ArrowDown"){e.preventDefault();onChange(snap(v-st));}
-    else if(e.key==="ArrowRight"||e.key==="ArrowUp"){e.preventDefault();onChange(snap(v+st));}
-  };
+function BtnP({onClick,disabled,children}){
+  return <GlassBtn onClick={onClick} disabled={disabled} dark radius={18} style={{flex:2,padding:"15px",fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.white}}>
+    {typeof children==="string"?t(children):children}
+  </GlassBtn>;
+}
+function BtnG({onClick,children}){
+  return <GlassBtn onClick={onClick} radius={18} style={{flex:1,padding:"15px",fontFamily:F,fontWeight:600,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",color:C.ink}}>
+    {typeof children==="string"?t(children):children}
+  </GlassBtn>;
+}
+function RangeField({label,value,min,max,step,unit,onChange}){
+  const v=parseFloat(value)||parseFloat(min)||0,isRatio=unit==="ratio";
   return <div style={{marginBottom:24}}>
-    <div ref={ref} dir="ltr" role="slider" tabIndex={0} aria-label={ariaLabel||label} aria-valuemin={min} aria-valuemax={max} aria-valuenow={v}
-      onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onKeyDown={key}
-      style={{...glass(999),position:"relative",height:60,touchAction:"none",userSelect:"none",WebkitUserSelect:"none",cursor:"ew-resize",background:"rgba(255,255,255,0.30)",outline:"none"}}>
-      <div style={{position:"absolute",top:0,bottom:0,left:0,width:(pct*100)+"%",background:"linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.78))",borderRadius:999,boxShadow:"inset 0 1px 0 rgba(255,255,255,1), 1px 0 8px rgba(94,68,180,0.12)"}}/>
-      <div style={{position:"absolute",inset:0,display:"flex",justifyContent:"space-between",alignItems:"center",padding:"0 20px",pointerEvents:"none"}}>
-        <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:C.stone}}>{t(label)}</span>
-        <span style={{fontFamily:F,fontWeight:800,fontSize:20,color:C.ink,letterSpacing:"-0.02em"}}>{isRatio?"1:"+v:v+(unit||"")}</span>
-      </div>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
+      <Lbl c={label}/>
+      <span style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{isRatio?"1:"+v:v+(unit||"")}</span>
     </div>
-    <div dir="ltr" style={{display:"flex",justifyContent:"space-between",marginTop:6,padding:"0 6px"}}>
+    <input type="range" min={min} max={max} step={step||1} value={v} onChange={e=>onChange(e.target.value)}/>
+    <div style={{display:"flex",justifyContent:"space-between",marginTop:7}}>
       <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{isRatio?"1:"+min:min+(unit||"")}</span>
       <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{isRatio?"1:"+max:max+(unit||"")}</span>
     </div>
@@ -685,7 +885,7 @@ function FillPill({label,value,min,max,step,unit,onChange,ariaLabel}){
 function YieldBox({text}){ if(!text) return null; return <div style={{padding:"13px 16px",background:C.ink,borderRadius:18,marginBottom:22,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontFamily:F,fontWeight:600,fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:"0.12em",textTransform:"uppercase"}}>Yield Preview</span><span style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.white}}>{text}</span></div>; }
 function ProgressBar({progress}){
   const pct=clamp(progress,0,5),dialled=pct>=5;
-  return <div style={{...glass(24),padding:"14px 16px",marginBottom:14,background:dialled?C.ink:C.card}}>
+  return <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",padding:"14px 16px",marginBottom:14,background:dialled?C.ink:C.card}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
       <span style={{fontFamily:F,fontWeight:700,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:dialled?C.gold:C.muted}}>{dialled?"★ Dialled In":"Dial-In Progress"}</span>
       <span style={{fontFamily:F,fontWeight:700,fontSize:11,color:dialled?"rgba(255,255,255,0.7)":C.stone}}>{pct}/5</span>
@@ -706,11 +906,11 @@ function BigN({val,top,bot,adj,onMinus,onPlus,adjustable}){
   </div>;
 }
 function SpecRow({label,value,sub}){ return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px",borderBottom:"1px solid "+C.line}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>{t(label)}</span><div style={{textAlign:"right"}}><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{value}</span>{sub&&<span style={{fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,marginLeft:8}}>{sub}</span>}</div></div>; }
-function ICard({label,children,dark}){ return <div style={{padding:"16px 18px",background:dark?C.ink:C.card,...glass(24),marginBottom:12}}>{label&&<div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:dark?"rgba(255,255,255,0.5)":C.muted,marginBottom:7}}>{t(label)}</div>}<p style={{fontFamily:F,fontWeight:500,fontSize:13,color:dark?"rgba(255,255,255,0.92)":C.stone,lineHeight:1.7,margin:0}}>{children}</p></div>; }
+function ICard({label,children,dark}){ return <div style={{padding:"16px 18px",background:dark?C.ink:C.card,border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:12}}>{label&&<div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:dark?"rgba(255,255,255,0.5)":C.muted,marginBottom:7}}>{t(label)}</div>}<p style={{fontFamily:F,fontWeight:500,fontSize:13,color:dark?"rgba(255,255,255,0.92)":C.stone,lineHeight:1.7,margin:0}}>{children}</p></div>; }
 
 // ── POUR CARD (Xbloom style) ──────────────────────────────────────
 function PourCard({p,idx}){
-  return <div style={{...glass(24),marginBottom:10,background:C.card}}>
+  return <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:10,background:C.card}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:C.ink}}>
       <span style={{fontFamily:F,fontWeight:800,fontSize:12,color:C.white,letterSpacing:"0.08em",textTransform:"uppercase"}}>{idx===0?"Bloom":"Pour "+idx}</span>
       <span style={{fontFamily:F,fontWeight:900,fontSize:18,color:C.white}}>{p.volume}ml</span>
@@ -731,13 +931,36 @@ function PourCard({p,idx}){
 }
 
 // ── SHARE CARD ────────────────────────────────────────────────────
+// Animated gradient mesh — drifting brand-colour orbs behind the share card body.
+// Deterministic waypoints (no Math.random in render) via CSS vars read by @keyframes meshmove.
+const MESH_ORBS=[
+  {c:"rgba(140,110,210,0.55)",size:"75%",top:"-25%",left:"-15%",dur:"11s",t:[[-0.2,-0.25],[0.45,-0.05],[0.1,0.4],[-0.4,0.15]]},
+  {c:"rgba(255,80,160,0.42)", size:"65%",top:"5%",  left:"45%", dur:"15s",t:[[0.3,0.1],[-0.25,0.35],[0.05,-0.3],[0.4,0.45]]},
+  {c:"rgba(255,200,50,0.38)", size:"55%",top:"40%", left:"0%",  dur:"18s",t:[[0.1,0.3],[-0.35,-0.2],[0.3,-0.35],[-0.15,0.25]]},
+  {c:"rgba(80,130,240,0.38)", size:"60%",top:"25%", left:"55%", dur:"13s",t:[[-0.3,0.2],[0.25,0.3],[-0.1,-0.35],[0.35,-0.15]]},
+];
+function MeshBG(){
+  return <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}} aria-hidden="true">
+    {MESH_ORBS.map((o,i)=>(
+      <div key={i} className="mesh" style={{
+        width:o.size,aspectRatio:"1",top:o.top,left:o.left,
+        background:"radial-gradient(circle,"+o.c+" 0%,transparent 70%)",
+        "--dur":o.dur,
+        "--tx-1":o.t[0][0],"--ty-1":o.t[0][1],"--tx-2":o.t[1][0],"--ty-2":o.t[1][1],
+        "--tx-3":o.t[2][0],"--ty-3":o.t[2][1],"--tx-4":o.t[3][0],"--ty-4":o.t[3][1],
+      }}/>
+    ))}
+    {/* soft veil keeps the stats readable over the moving colour */}
+    <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.30)"}}/>
+  </div>;
+}
+
 function ShareCard({mode,form,result}){
-  const blobBg="linear-gradient(135deg,rgba(140,110,210,0.15) 0%,rgba(255,80,160,0.1) 40%,rgba(255,200,50,0.08) 70%,rgba(80,130,240,0.1) 100%)";
-  return <div style={{...glass(24),background:C.card,overflow:"hidden"}}>
+  return <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",background:C.card}}>
     <div style={{background:C.ink,padding:"20px 22px",display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
       <div>
-        <div style={{fontFamily:FD,fontWeight:900,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:4}}>Calibrated Pours</div>
-        <div style={{fontFamily:FD,fontWeight:900,fontSize:22,color:C.white,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{form.beanName||"My Recipe"}</div>
+        <div style={{fontFamily:F,fontWeight:900,fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:4}}>Calibrated Pours</div>
+        <div style={{fontFamily:F,fontWeight:900,fontSize:22,color:C.white,textTransform:"uppercase",letterSpacing:"-0.02em"}}>{form.beanName||"My Recipe"}</div>
         {form.origin&&<div style={{fontFamily:F,fontWeight:500,fontSize:12,color:"rgba(255,255,255,0.6)",marginTop:2}}>{form.origin}{form.region?" · "+form.region:""}</div>}
       </div>
       <div style={{textAlign:"right"}}>
@@ -745,11 +968,13 @@ function ShareCard({mode,form,result}){
         <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:"rgba(255,255,255,0.5)",marginTop:2}}>{form.goal||"Balanced"}</div>
       </div>
     </div>
-    <div style={{background:blobBg,padding:"18px 22px"}}>
+    <div style={{position:"relative",overflow:"hidden",padding:"18px 22px"}}>
+      <MeshBG/>
+      <div style={{position:"relative",zIndex:1}}>
       {mode==="xbloom"&&result&&<>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:14}}>
           {[{l:"Grind",v:String(result.grindSize)},{l:"RPM",v:String(result.rpm)},{l:"Ratio",v:result.ratio}].map((x,i)=>(
-            <div key={i} style={{textAlign:"center",...glass(24),padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
+            <div key={i} style={{textAlign:"center",border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
               <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink}}>{x.v}</div>
               <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:C.muted}}>{x.l}</div>
             </div>
@@ -761,7 +986,7 @@ function ShareCard({mode,form,result}){
       {mode==="manual"&&result&&<>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:14}}>
           {[{l:"Grind",v:String(result.grindSize)},{l:"Temp",v:result.temperature+"°"},{l:"Ratio",v:result.ratio}].map((x,i)=>(
-            <div key={i} style={{textAlign:"center",...glass(24),padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
+            <div key={i} style={{textAlign:"center",border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",padding:"12px 6px",background:"rgba(255,255,255,0.7)"}}>
               <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink}}>{x.v}</div>
               <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:C.muted}}>{x.l}</div>
             </div>
@@ -770,6 +995,7 @@ function ShareCard({mode,form,result}){
         <div style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone}}>Bloom {result.bloomWater}g for {result.bloomDuration}s · {result.brewTime}</div>
       </>}
       <div style={{marginTop:14,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,lineHeight:1.6}}>{result&&result.flavor}</div>
+      </div>
     </div>
     <div style={{padding:"12px 22px",background:"rgba(0,0,0,0.03)",display:"flex",justifyContent:"space-between"}}>
       <span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Calibrated Pours</span>
@@ -782,14 +1008,14 @@ function ShareCard({mode,form,result}){
 // ── TEMPERATURE REASONING (shared) ───────────────────────────────
 function TempReason({r}){
   return <>
-    <div style={{...glass(24),background:C.card,padding:"16px 18px",marginBottom:12}}>
+    <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",background:C.card,padding:"16px 18px",marginBottom:12}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
         <span style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted}}>Why {r.temperature}°C</span>
         <span style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent}}>Safe {r.tempLo}–{r.tempHi}°C</span>
       </div>
       <p style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,margin:0}}>{r.tempReason}</p>
     </div>
-    {r.tip&&<div style={{...glassAccent("rgba(201,162,39,0.55)",20,{boxShadow:"0 8px 24px rgba(201,162,39,0.14)"}),background:C.card,padding:"13px 16px",marginBottom:12}}>
+    {r.tip&&<div style={{border:"1.5px solid rgba(201,162,39,0.55)",borderRadius:20,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",background:C.card,padding:"13px 16px",marginBottom:12}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.gold,marginBottom:6}}>Brewer's Tip</div>
       <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>{r.tip}</p>
     </div>}
@@ -802,7 +1028,7 @@ function ManualResult({r,brewMode,qAdj,setQAdj}){
   const go=grinderOut(r.grinderId||"Fellow Ode Gen 2",gr);
   const rows=[{sym:"00",label:"Rinse & preheat",w:null,cum:null,flow:"—",dur:"",note:"Rinse the paper with hot water, dump it. Kills paper taste and preheats the brewer."},{sym:"◦",label:"Bloom",w:r.bloomWater,cum:r.bloomWater,flow:"2-3 g/s",dur:r.bloomDuration+"s",note:"Saturate all grounds. Wait for full bloom."},...(r.pours||[]).map(p=>({sym:String(p.n).padStart(2,"0"),label:"Pour "+p.n,w:p.water,cum:p.total,flow:p.flow,dur:p.duration+"s",note:p.notes}))];
   return <div className="anim">
-    <div style={{display:"flex",background:C.card,...glass(24),marginBottom:6}}>
+    <div style={{display:"flex",background:C.card,border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:6}}>
       <BigN val={go.display} top="Grind" bot={go.microns+" µm"} adjustable adj={qAdj.ode} onMinus={()=>setQAdj(q=>({...q,ode:q.ode-0.5}))} onPlus={()=>setQAdj(q=>({...q,ode:q.ode+0.5}))}/>
       <div style={{width:2,background:C.ink}}/>
       <BigN val={tmp+"°"} top="Temp" bot={r.tempLo+"-"+r.tempHi+"°C"} adjustable adj={qAdj.temp} onMinus={()=>setQAdj(q=>({...q,temp:q.temp-1}))} onPlus={()=>setQAdj(q=>({...q,temp:q.temp+1}))}/>
@@ -810,7 +1036,7 @@ function ManualResult({r,brewMode,qAdj,setQAdj}){
       <BigN val={r.brewTime} top="Time" bot="target"/>
     </div>
     <div style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted,marginBottom:14,lineHeight:1.5}}>{go.name} · {go.scale} · community-calibrated — trust taste over numbers, adjust ±</div>
-    <div style={{...glass(24),marginBottom:14}}>
+    <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:14}}>
       <SpecRow label="Coffee" value={r.coffeeDose+"g"}/><SpecRow label="Ratio" value={r.ratio}/>
       <SpecRow label={brewMode==="Iced"?"Hot Water":"Water"} value={r.totalWater+"g"}/>
       {brewMode==="Iced"&&<SpecRow label="Ice" value={r.iceGrams+"g"} sub="in server first"/>}
@@ -819,7 +1045,7 @@ function ManualResult({r,brewMode,qAdj,setQAdj}){
       <div style={{padding:"14px 16px",display:"flex",justifyContent:"space-between"}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>Bloom</span><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{r.bloomWater}g · {r.bloomDuration}s</span></div>
     </div>
     <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Pour Sequence</div>
-    <div style={{...glass(24),marginBottom:14}}>
+    <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:14}}>
       {rows.map((row,i)=>(
         <div key={i} style={{display:"grid",gridTemplateColumns:"24px 1fr 50px 50px 56px",gap:8,padding:"12px",borderBottom:i<rows.length-1?"1px solid "+C.line:"none"}}>
           <div style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent,paddingTop:2}}>{row.sym}</div>
@@ -841,7 +1067,7 @@ function XbloomResult({r,beanName}){
   const icedTitle=(beanName?"Iced "+beanName:"Iced Recipe")+" — "+r.iceGrams+"g Ice";
   const totalPour=(r.pours||[]).reduce((s,p)=>s+p.volume,0);
   return <div className="anim">
-    {r.isIced&&<div style={{padding:"16px 18px",background:C.card,...glass(24),marginBottom:14}}>
+    {r.isIced&&<div style={{padding:"16px 18px",background:C.card,border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:14}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,color:C.accent,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:6}}>Iced Recipe</div>
       <div style={{fontFamily:F,fontWeight:800,fontSize:16,color:C.ink,marginBottom:12}}>{icedTitle}</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:1,background:C.line}}>
@@ -855,7 +1081,7 @@ function XbloomResult({r,beanName}){
       </div>
     </div>}
     <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Coffee</div>
-    <div style={{...glass(24),marginBottom:r.over18?10:16}}>
+    <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:r.over18?10:16}}>
       <SpecRow label="Dripper" value={r.dripper} sub={r.needsOther?"app: select Other":""}/>
       {r.filter&&<SpecRow label="Filter" value={r.filter.id} sub={r.filter.rinse?"rinse first":"no rinse"}/>}
       <SpecRow label="Dose" value={r.dose+"g"}/>
@@ -866,11 +1092,11 @@ function XbloomResult({r,beanName}){
       <SpecRow label="Expected Cup" value={r.cupOut+"ml"} sub={r.isIced?"after ice melts":"grounds hold ~2.1 g/g"}/>
       <div style={{padding:"14px 16px",display:"flex",justifyContent:"space-between"}}><span style={{fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.muted}}>Brew Time</span><span style={{fontFamily:F,fontWeight:800,fontSize:18,color:C.ink}}>{r.brewTime}</span></div>
     </div>
-    {r.over18&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),padding:"13px 16px",marginBottom:16,background:C.card}}>
+    {r.over18&&<div style={{border:"1.5px solid rgba(123,47,190,0.50)",borderRadius:20,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 8px 24px rgba(123,47,190,0.14)",padding:"13px 16px",marginBottom:16,background:C.card}}>
       <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.accent,marginBottom:6}}>Dose over 18g — app entry</div>
       <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>Grind the full <strong>{r.dose}g</strong> and keep using the same dripper. The xBloom app caps dose at <strong>18g</strong>, so enter 18g at <strong>1:{r.appRatio}</strong> — that lands the same {r.totalVolume}ml of water on your {r.dose}g.</p>
     </div>}
-    <div style={{...glassThin(16),background:C.card,padding:"11px 16px",marginBottom:12,display:"flex",gap:12,alignItems:"center"}}>
+    <div style={{border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",background:C.card,padding:"11px 16px",marginBottom:12,display:"flex",gap:12,alignItems:"center"}}>
       <span style={{fontFamily:F,fontWeight:800,fontSize:13,color:C.accent}}>00</span>
       <span style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.5}}>{r.filter&&!r.filter.rinse
         ?("No rinse needed — "+r.filter.id+" paper is taste-neutral out of the box. Seat the filter and brew.")
@@ -888,8 +1114,94 @@ function XbloomResult({r,beanName}){
   </div>;
 }
 
+// ── XPOD CARD SECTION (Export view — tap-to-brew via XBRecipeWriter) ─
+function CardSection({result,onMsg}){
+  const [showBytes,setShowBytes]=useState(false);
+  const card=buildCardData(result);
+  if(!card) return null;
+  const copyHex=()=>{try{navigator.clipboard.writeText(cardHex(card.bytes));onMsg("Card bytes copied ✓");}catch(e){onMsg("Copy not available");}setTimeout(()=>onMsg(""),2500);};
+  const glass={border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden"};
+  return <div style={{...glass,marginTop:16,background:C.card}}>
+    <div style={{background:C.ink,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.white,letterSpacing:"0.1em",textTransform:"uppercase"}}>xPod Card · Tap-to-Brew</span>
+      <span style={{fontFamily:F,fontWeight:600,fontSize:9,color:C.gold,letterSpacing:"0.08em",textTransform:"uppercase"}}>via XBRecipeWriter</span>
+    </div>
+    <div style={{padding:"14px 16px"}}>
+      <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.65,margin:"0 0 12px"}}>Prefer skipping the app entirely? The machine can brew straight from an NFC card — tap the card on it and it pours. Apple only lets real apps (not websites) write NFC cards, so do it once with the free <strong>XBRecipeWriter</strong> app: create a recipe there using the values below, then hold a genuine xBloom card or a used xPod to the top of your phone. After that, brewing this recipe is literally one tap.</p>
+      <div style={{border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,marginBottom:12}}>
+        <SpecRow label="Card Dose" value="15g" sub="cards always store 15g"/>
+        <SpecRow label="Card Ratio" value={"1:"+card.cardRatio} sub={card.cardTotal+"ml — same water, same cup"}/>
+        <SpecRow label="Grind Size" value={card.grindUsed} sub={card.grindClamped?"card min is 40 — was "+result.grindSize:xbloomMicrons(card.grindUsed)+"µm"}/>
+        <SpecRow label="RPM" value={result.rpm}/>
+        <SpecRow label="Cup Type" value="Other" sub="avoids overflow waits"/>
+      </div>
+      <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted,marginBottom:6}}>Pour volumes on the card</div>
+      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+        {card.vols.map((v,i)=><span key={i} style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.ink,border:"1px solid rgba(150,130,210,0.35)",borderRadius:999,padding:"6px 12px",background:"rgba(255,255,255,0.5)"}}>{i===0?t("Bloom"):t("Pour")+" "+i}: {v}ml</span>)}
+      </div>
+      <button onClick={()=>setShowBytes(b=>!b)} style={{background:"none",border:"none",padding:0,fontFamily:F,fontWeight:700,fontSize:11,color:C.accent,cursor:"pointer",letterSpacing:"0.04em"}}>{showBytes?t("Hide card bytes")+" ▴":t("Show card bytes")+" ▾"}</button>
+      {showBytes&&<div className="anim" style={{marginTop:10}}>
+        <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:C.muted,marginBottom:6}}>Card payload ({card.bytes.length} bytes + CRC, after the 32-byte signature)</div>
+        <div style={{fontFamily:"ui-monospace,Menlo,monospace",fontSize:11,lineHeight:1.8,color:C.ink,background:"rgba(0,0,0,0.04)",border:"1px solid "+C.line,borderRadius:12,padding:"10px 12px",wordBreak:"break-all",direction:"ltr",textAlign:"left"}}>{cardHex(card.bytes)}</div>
+        <button onClick={copyHex} style={{width:"100%",padding:"13px",background:"transparent",border:"1px solid rgba(150,130,210,0.4)",borderRadius:14,color:C.ink,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer",marginTop:10}}>Copy card bytes</button>
+        <p style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted,lineHeight:1.6,margin:"10px 0 0"}}>Genuine xBloom cards only — each card carries a unique signature in its first 32 bytes that can't be copied, so the writer keeps the card's signature and swaps just the recipe behind it.</p>
+      </div>}
+    </div>
+  </div>;
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────
 const BLANK={beanName:"",origin:"",region:"",variety:"",process:"",altitude:"",notes:"",noteChips:[],roast:"Light",roastDate:"",goal:"Balanced",bloomRatio:"1:3",brewMode:"Hot",brewer:"",filter:"",dose:"18",ratio:"1:16",xBrewMode:"Hot",xDose:"18",xRatio:"1:16",iceMode:"Auto",iceGrams:"",grinder:"Fellow Ode Gen 2",xDripper:"Omni",xFilter:""};
+
+// ── LANDING (cinematic intro: white → morph → rise → buttons) ────
+let INTRO_PLAYED=false;
+function Landing({lang,toggleLang,onMode,onSaved,onLit}){
+  const reduced=typeof window!=="undefined"&&window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [phase,setPhase]=useState(INTRO_PLAYED||reduced?5:0);
+  useEffect(()=>{ if(phase>=1) onLit&&onLit(); if(phase>=5){ INTRO_PLAYED=true; return; } if(phase===0) return;
+    const delays={1:750,2:380,3:380,4:420};
+    const id=setTimeout(()=>setPhase(p=>p+1),delays[phase]||400);
+    return ()=>clearTimeout(id);
+  },[phase]);
+  const W={maxWidth:600,margin:"0 auto",padding:"0 22px"};
+  const risen=phase>=1;
+  return <div>
+    <div className={"intro-item"+(phase>=4?" in":"")} style={{...W,display:"flex",justifyContent:"flex-end",paddingTop:18}}>
+      <GlassBtn lite onClick={toggleLang} radius={16} style={{padding:"7px 14px",fontFamily:F,fontWeight:700,fontSize:11,color:C.stone,letterSpacing:"0.06em"}}>{lang==="en"?"العربية":"English"}</GlassBtn>
+    </div>
+    {/* Title block — vertically centered during morph, rises to top */}
+    <div className="intro-title" style={{...W,textAlign:"center",paddingTop:30,paddingBottom:34,transform:risen?"translateY(0)":"translateY(calc(44vh - 110px))"}}>
+      <div style={{position:"relative",minHeight:96}}>
+        <div className="xfade" style={{position:"absolute",inset:0,display:"flex",alignItems:"center",opacity:risen?0:1,pointerEvents:"none"}}>
+          {phase===0&&<MorphTitle texts={["Calibrated","Pours"]} fontSize={46} onDone={()=>setPhase(1)}/>}
+        </div>
+        <div className="xfade" style={{opacity:risen?1:0}}>
+          {/* threshold filter keeps the gooey morphed-ink look on the resting title */}
+          <div style={{fontFamily:F,fontWeight:900,fontSize:38,lineHeight:0.9,color:C.ink,letterSpacing:"-0.03em",textTransform:"uppercase",filter:"url(#threshold) blur(0.6px)"}}>Calibrated<br/>Pours</div>
+          <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.stone,marginTop:16,letterSpacing:"0.22em",textTransform:"uppercase"}}>{t("Precision pour-over recipes")}</div>
+        </div>
+      </div>
+    </div>
+    <div style={{...W,display:"flex",flexDirection:"column",gap:12}}>
+      <button className={"lg intro-item"+(phase>=2?" in":"")} onClick={()=>onMode("xbloom")} style={{borderRadius:22,padding:"22px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",textAlign:"start"}}>
+        <span className="lg-lens" style={{backgroundColor:"rgba(255,255,255,0.24)"}}/>
+        <span style={{position:"relative",zIndex:1,display:"flex",alignItems:"center",gap:16}}>
+          <span style={{fontFamily:F,fontWeight:900,fontSize:42,color:C.ink,letterSpacing:"-0.06em",lineHeight:1}}>xb</span>
+          <span style={{fontFamily:F,fontSize:21,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}><span style={{fontWeight:400}}>x</span><span style={{fontWeight:900}}>Bloom</span><span style={{fontWeight:600}}> Studio</span></span>
+        </span>
+        <span style={{position:"relative",zIndex:1,fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</span>
+      </button>
+      <button className={"lg intro-item"+(phase>=3?" in":"")} onClick={()=>onMode("manual")} style={{borderRadius:22,padding:"22px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",textAlign:"start"}}>
+        <span className="lg-lens" style={{backgroundColor:"rgba(255,255,255,0.24)"}}/>
+        <span style={{position:"relative",zIndex:1,fontFamily:F,fontWeight:900,fontSize:21,color:C.ink,letterSpacing:"-0.02em",textTransform:"uppercase"}}>Manual<br/><span style={{fontWeight:600,fontSize:15,textTransform:"none"}}>Pour-Over</span></span>
+        <span style={{position:"relative",zIndex:1,fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</span>
+      </button>
+      <div className={"intro-item"+(phase>=4?" in":"")} style={{display:"flex",marginTop:8}}>
+        <GlassBtn lite onClick={onSaved} radius={16} style={{flex:1,padding:"14px",fontFamily:F,fontWeight:700,fontSize:11,color:C.stone,letterSpacing:"0.12em",textTransform:"uppercase"}}>{t("☆ Bean Journal")}</GlassBtn>
+      </div>
+    </div>
+  </div>;
+}
 
 export default function App(){
   const [lang,setLang]=useState(()=>{try{return localStorage.getItem("cp_lang")||"en";}catch(e){return "en";}});
@@ -914,6 +1226,7 @@ export default function App(){
   const [qAdj,setQAdj]=useState({ode:0,x:0,temp:0});
   const [showAbout,setShowAbout]=useState(false);
   const [insights,setInsights]=useState([]);
+  const [lit,setLit]=useState(INTRO_PLAYED);
 
   const upd=(k,v)=>setForm(f=>({...f,[k]:v}));
   const toggleChip=chip=>{ const ch=form.noteChips||[]; upd("noteChips",ch.includes(chip)?ch.filter(c=>c!==chip):[...ch,chip]); };
@@ -986,6 +1299,13 @@ export default function App(){
     setSaveMsg(ok?"Saved to your Bean Journal ✓":"Could not save — try refreshing");
     if(ok){ const list=loadRecs(); setSaved(list); }
   }
+  function sendToXbloom(){
+    try{ navigator.clipboard.writeText(recipeText(mode,form,result)); }catch(e){}
+    setCopyMsg(t("Copied ✓ — opening xBloom. In the app: ⊕ Create Recipe, then enter the values (they're on your clipboard in order)."));
+    setTimeout(()=>setCopyMsg(""),6000);
+    // xBloom has no public recipe-import link, so the best hand-off is: copy everything + jump to the app
+    setTimeout(()=>{ try{ window.location.href="xbloom://"; }catch(e){} },350);
+  }
   function doCopy(){
     const txt=recipeText(mode,form,result);
     try{ navigator.clipboard.writeText(txt); setCopyMsg("Copied ✓"); }
@@ -1001,58 +1321,41 @@ export default function App(){
   function removeSaved(id){ delRec(id); const list=loadRecs(); setSaved(list); setInsights(genInsights(list)); }
 
   const W={maxWidth:600,margin:"0 auto",padding:"0 22px"};
+  // Dock visibility: never during calibration; on landing only post-intro with an active recipe
+  const dockOn=view!=="calibrating"&&(view!=="landing"||(lit&&!!result));
   const headerNav=(left,right,onLeft)=>(
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:34}}>
       <button onClick={onLeft} style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,background:"none",border:"none",cursor:"pointer"}}>{t(left)}</button>
       <div style={{fontFamily:F,fontWeight:800,fontSize:10,color:C.accent,letterSpacing:"0.16em",textTransform:"uppercase"}}>{t(right)}</div>
     </div>
   );
-  const bigHead=txt=><div style={{fontFamily:FD,fontWeight:700,fontSize:26,color:C.ink,lineHeight:1.15,marginBottom:26,letterSpacing:"-0.01em",whiteSpace:"pre-line"}}>{t(txt)}</div>;
+  const bigHead=txt=><div style={{fontFamily:F,fontWeight:800,fontSize:23,color:C.ink,lineHeight:1.1,marginBottom:26,letterSpacing:"-0.02em",whiteSpace:"pre-line"}}>{t(txt)}</div>;
 
   return <>
     <style>{CSS}</style>
+    <GlassFX/>
     {/* White base — sits below blobs, guarantees white bg in any iframe */}
     <div style={{position:"fixed",inset:0,background:"#FAF9F5",zIndex:-1}}/>
-    <Blobs/>
+    {/* Blobs hidden during the white intro, bleed in as the title rises */}
+    <div style={{opacity:lit?1:0,transition:"opacity 1.4s ease"}}><Blobs/></div>
     {/* Main wrapper: transparent so blobs show through, cards have their own white fills */}
-    <div dir={lang==="ar"?"rtl":"ltr"} style={{minHeight:"100vh",position:"relative",zIndex:1,paddingBottom:60}}>
+    <div dir={lang==="ar"?"rtl":"ltr"} style={{minHeight:"100vh",position:"relative",zIndex:1,paddingBottom:dockOn?130:60}}>
 
       {/* LANDING */}
-      {view==="landing"&&<div className="anim">
-        <div style={{...W,display:"flex",justifyContent:"flex-end",paddingTop:18}}>
-          <button onClick={toggleLang} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.stone,background:"transparent",...glassThin(16),padding:"7px 14px",cursor:"pointer",letterSpacing:"0.06em"}}>{lang==="en"?"العربية":"English"}</button>
-        </div>
-        <div style={{...W,textAlign:"center",paddingTop:48,paddingBottom:40}}>
-          <div style={{fontFamily:FD,fontWeight:900,fontSize:38,lineHeight:0.95,color:C.ink,letterSpacing:"-0.02em",textTransform:"uppercase"}}>Calibrated<br/>Pours</div>
-          <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.stone,marginTop:16,letterSpacing:"0.22em",textTransform:"uppercase"}}>{t("Precision pour-over recipes")}</div>
-        </div>
-        <div style={{...W,display:"flex",flexDirection:"column",gap:12}}>
-          <div onClick={()=>{setMode("xbloom");setView("bean");}} style={{...glass(24),background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{display:"flex",alignItems:"center",gap:16}}>
-              <div style={{fontFamily:F,fontWeight:900,fontSize:42,color:C.ink,letterSpacing:"-0.06em",lineHeight:1}}>xb</div>
-              <div style={{fontFamily:F,fontSize:21,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}><span style={{fontWeight:400}}>x</span><span style={{fontWeight:900}}>Bloom</span><span style={{fontWeight:600}}> Studio</span></div>
-            </div>
-            <div style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</div>
-          </div>
-          <div onClick={()=>{setMode("manual");setView("bean");}} style={{...glass(24),background:C.card,padding:"22px 24px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontFamily:F,fontWeight:900,fontSize:21,color:C.ink,letterSpacing:"-0.02em",textTransform:"uppercase"}}>Manual<br/><span style={{fontWeight:600,fontSize:15,textTransform:"none"}}>Pour-Over</span></div>
-            <div style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink}}>→</div>
-          </div>
-          <button onClick={openSaved} style={{marginTop:8,padding:"14px",background:"transparent",...glassThin(16),color:C.stone,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>{t("☆ Bean Journal")}</button>
-        </div>
-      </div>}
+      {view==="landing"&&<Landing lang={lang} toggleLang={toggleLang} onLit={()=>setLit(true)}
+        onMode={m=>{setMode(m);setView("bean");}} onSaved={openSaved}/>}
 
       {/* BEAN JOURNAL */}
       {view==="saved"&&<div className="anim" style={{...W,paddingTop:36}}>
         {headerNav("‹ Home","Bean Journal",reset)}
         {bigHead("Bean\nJournal")}
-        {insights.length>0&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),background:C.card,padding:"14px 16px",marginBottom:18}}>
+        {insights.length>0&&<div style={{border:"1.5px solid rgba(123,47,190,0.50)",borderRadius:20,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 8px 24px rgba(123,47,190,0.14)",background:C.card,padding:"14px 16px",marginBottom:18}}>
           <div style={{fontFamily:F,fontWeight:800,fontSize:10,color:C.accent,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:8}}>Process Intelligence</div>
           {insights.map((s,i)=><div key={i} style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,marginBottom:4}}>· {s}</div>)}
         </div>}
         {saved.length===0&&<div style={{fontFamily:F,fontWeight:500,fontSize:14,color:C.muted,padding:"20px 0"}}>No brews logged yet. Generate a recipe, dial it in, and save it here.</div>}
         {saved.map(rec=>(
-          <div key={rec.id} style={{...glass(24),padding:"16px",marginBottom:10,background:C.card}}>
+          <div key={rec.id} style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",padding:"16px",marginBottom:10,background:C.card}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
               <div onClick={()=>loadSaved(rec)} style={{cursor:"pointer",flex:1}}>
                 <div style={{fontFamily:F,fontWeight:800,fontSize:15,color:C.ink}}>{rec.name}{rec.rev>0?" · v"+(rec.rev+1):""}</div>
@@ -1072,17 +1375,17 @@ export default function App(){
 
         {/* Import shortcuts */}
         <div style={{marginBottom:14}}>
-          <button onClick={()=>setShowPaste(s=>!s)} style={{width:"100%",padding:"13px 10px",...glass(24),background:showPaste?C.ink:C.card,fontFamily:F,fontWeight:700,fontSize:11,color:showPaste?C.white:C.ink,cursor:"pointer",letterSpacing:"0.04em"}}>{t("📋 Paste Bag Text — auto-fill the form")}</button>
+          <button onClick={()=>setShowPaste(s=>!s)} style={{width:"100%",padding:"13px 10px",border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",background:showPaste?C.ink:C.card,fontFamily:F,fontWeight:700,fontSize:11,color:showPaste?C.white:C.ink,cursor:"pointer",letterSpacing:"0.04em"}}>{t("📋 Paste Bag Text — auto-fill the form")}</button>
         </div>
-        {showPaste&&<div className="anim" style={{...glass(24),background:C.card,padding:16,marginBottom:14}}>
+        {showPaste&&<div className="anim" style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",background:C.card,padding:16,marginBottom:14}}>
           <Lbl c="Paste the roaster's description"/>
-          <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)} rows={5} placeholder="Paste from the coffee bag or roaster site — origin, process, variety, altitude, roast level and tasting notes. I'll fill the form for you." style={{width:"100%",boxSizing:"border-box",background:"transparent",...glassThin(16),padding:"10px 12px",fontFamily:F,fontWeight:500,fontSize:13,color:C.ink,outline:"none",resize:"vertical",marginTop:8,lineHeight:1.5}}/>
+          <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)} rows={5} placeholder="Paste from the coffee bag or roaster site — origin, process, variety, altitude, roast level and tasting notes. I'll fill the form for you." style={{width:"100%",boxSizing:"border-box",background:"transparent",border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",padding:"10px 12px",fontFamily:F,fontWeight:500,fontSize:13,color:C.ink,outline:"none",resize:"vertical",marginTop:8,lineHeight:1.5}}/>
           <div style={{display:"flex",gap:10,marginTop:12}}>
-            <button onClick={()=>{setShowPaste(false);setPasteText("");}} style={{flex:1,padding:"12px",...glassThin(16),background:"transparent",fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Cancel</button>
-            <button onClick={doParse} style={{flex:2,padding:"12px",border:"none",background:C.accent,color:C.white,fontFamily:F,fontWeight:800,fontSize:12,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Parse & Fill</button>
+            <button onClick={()=>{setShowPaste(false);setPasteText("");}} style={{flex:1,padding:"12px",border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",background:"transparent",fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,cursor:"pointer",textTransform:"uppercase",letterSpacing:"0.08em"}}>Cancel</button>
+            <GlassBtn tint="rgba(123,47,190,0.80)" onClick={doParse} radius={16} style={{flex:2,padding:"12px",fontFamily:F,fontWeight:800,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em",color:C.white}}>Parse & Fill</GlassBtn>
           </div>
         </div>}
-        {parseMsg&&<div style={{...glassAccent("rgba(123,47,190,0.50)"),background:C.card,padding:"11px 14px",marginBottom:14,fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,lineHeight:1.5}}>{parseMsg}</div>}
+        {parseMsg&&<div style={{border:"1.5px solid rgba(123,47,190,0.50)",borderRadius:20,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 8px 24px rgba(123,47,190,0.14)",background:C.card,padding:"11px 14px",marginBottom:14,fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,lineHeight:1.5}}>{parseMsg}</div>}
         <div style={{textAlign:"center",fontFamily:F,fontWeight:500,fontSize:9,color:C.muted,marginBottom:24,letterSpacing:"0.1em",textTransform:"uppercase"}}>{t("or enter manually")}</div>
 
         <div style={{marginBottom:20}}><Lbl c="Coffee Name"/><TIn value={form.beanName} onChange={e=>upd("beanName",e.target.value)} placeholder="e.g. Guji — Fermentation Lab"/></div>
@@ -1096,15 +1399,15 @@ export default function App(){
           </datalist>
         </div>
 
-        <div style={{marginBottom:20}}><Lbl c="Processing Method" req/><Sel value={form.process} onChange={e=>upd("process",e.target.value)} options={PROCESSES} placeholder="Select processing"/></div>
+        <div style={{marginBottom:20}}><Lbl c="Processing Method *"/><Sel value={form.process} onChange={e=>upd("process",e.target.value)} options={PROCESSES} placeholder="Select processing"/></div>
 
-        <div style={{marginBottom:20}}><Lbl c="Roast Level" req/><Seg options={ROASTS} value={form.roast} onChange={v=>upd("roast",v)} small={true}/></div>
+        <div style={{marginBottom:20}}><Lbl c="Roast Level *"/><Seg options={ROASTS} value={form.roast} onChange={v=>upd("roast",v)} small={true}/></div>
 
         <div style={{marginBottom:22}}>
-          <Lbl c="Roast Date" hint="optional · improves accuracy"/>
+          <Lbl c="Roast Date"/>
           <TIn type="date" value={form.roastDate} onChange={e=>upd("roastDate",e.target.value)} placeholder=""/>
           {dRoast!==null&&(
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",...glass(24),marginTop:10}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginTop:10}}>
               <div style={{padding:"12px 14px",borderRight:"1px solid "+C.line}}>
                 <div style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.muted,marginBottom:4}}>Days Off Roast</div>
                 <div style={{fontFamily:F,fontWeight:900,fontSize:28,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{dRoast}</div>
@@ -1171,7 +1474,7 @@ export default function App(){
         <ProgressSteps current={3}/>
         {bigHead("Configure\nthe machine")}
         <div style={{marginBottom:24}}><Lbl c="How do you like your coffee?"/><Seg options={["Hot","Iced"]} value={form.xBrewMode} onChange={v=>upd("xBrewMode",v)}/></div>
-        <FillPill label="Dose" value={form.xDose} min={8} max={25} step={1} unit="g" onChange={v=>upd("xDose",v)}/>
+        <RangeField label="Dose" value={form.xDose} min={8} max={25} step={1} unit="g" onChange={v=>upd("xDose",v)}/>
         {parseFloat(form.xDose)>18&&<div className="anim" style={{marginTop:-12,marginBottom:20}}>
           <Lbl c="Dripper on the machine"/>
           <Sel value={form.xDripper||"Omni"} onChange={e=>upd("xDripper",e.target.value)} options={XDRIPPERS.map(dp=>dp.id)} placeholder={t("Select your dripper")}/>
@@ -1187,7 +1490,7 @@ export default function App(){
           <Sel value={form.xFilter||""} onChange={e=>upd("xFilter",e.target.value)} options={XFILTERS.map(f=>f.id)} placeholder={t("Select filter")}/>
           {form.xFilter&&(()=>{const f=XFILTERS.find(x=>x.id===form.xFilter);return f?<div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone,lineHeight:1.5}}><span style={{fontWeight:700,color:f.rinse?C.gold:C.accent}}>{f.rinse?"Rinse first":"No rinse needed"}</span> — {f.note}</div>:null;})()}
         </div>
-        <FillPill label={form.xBrewMode==="Iced"?"Target Ratio (total drink)":"Ratio"} value={pRatio(form.xRatio)||15} min={5} max={25} step={0.5} unit="ratio" onChange={v=>upd("xRatio","1:"+v)}/>
+        <RangeField label={form.xBrewMode==="Iced"?"Target Ratio (total drink)":"Ratio"} value={pRatio(form.xRatio)||15} min={5} max={25} step={0.5} unit="ratio" onChange={v=>upd("xRatio","1:"+v)}/>
         {form.xBrewMode==="Iced"&&<div style={{marginBottom:24}}>
           <Lbl c="Ice Amount"/>
           <Seg options={["Auto","Manual"]} value={form.iceMode} onChange={v=>upd("iceMode",v)}/>
@@ -1196,7 +1499,15 @@ export default function App(){
             const tot=Math.round((parseFloat(form.xDose)||18)*(pRatio(form.xRatio)||15));
             const iceMin=round5(tot*0.20),iceMax=round5(tot*0.58),iceVal=parseFloat(form.iceGrams)||round5(tot*0.40);
             return <div style={{marginTop:16}}>
-              <FillPill label="Ice Grams" value={iceVal} min={iceMin} max={iceMax} step={5} unit="g" onChange={v=>upd("iceGrams",v)}/>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
+                <Lbl c="Ice Grams"/>
+                <span style={{fontFamily:F,fontWeight:800,fontSize:22,color:C.ink,lineHeight:1,letterSpacing:"-0.02em"}}>{iceVal}g</span>
+              </div>
+              <input type="range" min={iceMin} max={iceMax} step={5} value={iceVal} onChange={e=>upd("iceGrams",e.target.value)}/>
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:7}}>
+                <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{iceMin}g</span>
+                <span style={{fontFamily:F,fontWeight:500,fontSize:10,color:C.muted}}>{iceMax}g</span>
+              </div>
             </div>;
           })()}
         </div>}
@@ -1213,8 +1524,8 @@ export default function App(){
         {form.brewer&&<div style={{marginBottom:22}}><Lbl c="Filter"/><Sel value={form.filter} onChange={e=>upd("filter",e.target.value)} options={FILTERS[form.brewer]||[]} placeholder="Select filter"/></div>}
         <div style={{marginBottom:22}}><Lbl c="Grinder"/><div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:4}}>{GRINDERS.map(g=><Pill key={g.id} active={(form.grinder||"Fellow Ode Gen 2")===g.id} onClick={()=>upd("grinder",g.id)}>{g.id}</Pill>)}</div></div>
         <div style={{marginBottom:24}}><Lbl c="Brew Mode"/><Seg options={["Hot","Iced"]} value={form.brewMode} onChange={v=>upd("brewMode",v)}/></div>
-        <FillPill label="Dose" value={form.dose} min={8} max={40} step={1} unit="g" onChange={v=>upd("dose",v)}/>
-        <FillPill label="Ratio" value={pRatio(form.ratio)||15} min={12} max={18} step={0.5} unit="ratio" onChange={v=>upd("ratio","1:"+v)}/>
+        <RangeField label="Dose" value={form.dose} min={8} max={40} step={1} unit="g" onChange={v=>upd("dose",v)}/>
+        <RangeField label="Ratio" value={pRatio(form.ratio)||15} min={12} max={18} step={0.5} unit="ratio" onChange={v=>upd("ratio","1:"+v)}/>
         <div style={{marginBottom:24}}><Lbl c="Bloom Ratio"/><Seg options={[{value:"1:2",label:"1:2"},{value:"1:3",label:t("1:3 (recommended)")}]} value={form.bloomRatio} onChange={v=>upd("bloomRatio",v)}/><div style={{marginTop:8,fontFamily:F,fontWeight:500,fontSize:11,color:C.stone}}>{form.bloomRatio==="1:2"?("2x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*2))+"g bloom"):("3x dose — "+(Math.round((parseFloat(mode==="xbloom"?form.xDose:form.dose)||18)*3))+"g bloom")}</div></div>
         <YieldBox text={yieldStr()}/>
         <div style={{display:"flex",gap:10}}><BtnG onClick={()=>setView("goal")}>‹ Back</BtnG><BtnP onClick={generate} disabled={!canManu}>Generate</BtnP></div>
@@ -1227,36 +1538,49 @@ export default function App(){
       {view==="result"&&result&&<div style={{...W,paddingTop:36,paddingBottom:40}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
           <div>
-            <div style={{fontFamily:FD,fontWeight:900,fontSize:22,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{t("Your Recipe")}</div>
+            <div style={{fontFamily:F,fontWeight:900,fontSize:22,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em"}}>{t("Your Recipe")}</div>
             {rev>0&&<div style={{fontFamily:F,fontWeight:700,fontSize:10,color:C.accent,letterSpacing:"0.1em",textTransform:"uppercase",marginTop:2}}>Revision {rev+1}</div>}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={()=>setView("brew")} style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.ink,background:"none",...glass(24),padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>{t("Edit")}</button>
-            <button onClick={reset} style={{fontFamily:F,fontWeight:600,fontSize:11,color:C.stone,background:"none",...glassThin(16),padding:"8px 14px",cursor:"pointer",textTransform:"uppercase"}}>{t("New")}</button>
+            <GlassBtn onClick={()=>setView("edit")} style={{padding:"8px 14px",fontFamily:F,fontWeight:700,fontSize:11,color:C.ink,textTransform:"uppercase"}}>{t("Edit")}</GlassBtn>
+            <GlassBtn lite onClick={reset} style={{padding:"8px 14px",fontFamily:F,fontWeight:600,fontSize:11,color:C.stone,textTransform:"uppercase"}}>{t("New")}</GlassBtn>
           </div>
         </div>
         {(progress>0||rev>0)&&<ProgressBar progress={progress}/>}
         {mode==="xbloom"?<XbloomResult r={result} beanName={form.beanName}/>:<ManualResult r={result} brewMode={form.brewMode} qAdj={qAdj} setQAdj={setQAdj}/>}
         <div style={{display:"flex",gap:10,marginTop:14,marginBottom:10}}>
-          <button onClick={()=>setView("share")} style={{flex:1,padding:"13px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer"}}>{t("Share Card")}</button>
+          <GlassBtn onClick={()=>setView("share")} radius={18} style={{flex:1,padding:"13px",fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.ink}}>{t("Share Card")}</GlassBtn>
+          {mode==="xbloom"&&<GlassBtn dark onClick={()=>setView("export")} radius={18} style={{flex:1,padding:"13px",fontFamily:F,fontWeight:700,fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.white}}>{t("Export")}</GlassBtn>}
         </div>
-        <div style={{...glass(24),background:C.ink,padding:"18px",marginBottom:14}}>
+        <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",background:C.ink,padding:"18px",marginBottom:14}}>
           <div style={{fontFamily:F,fontWeight:900,fontSize:16,color:C.white,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:6}}>{t("Brewed it?")}</div>
           <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:"rgba(255,255,255,0.8)",lineHeight:1.6,marginBottom:14}}>Tell the Coffee Doctor how it tasted and it will dial in your next version.</div>
-          <button onClick={()=>{setPicked(null);setView("doctor");}} style={{width:"100%",padding:"14px",background:C.white,border:"none",borderRadius:16,color:C.ink,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>{t("Open Coffee Doctor")}</button>
+          <GlassBtn tint="rgba(255,255,255,0.92)" onClick={()=>{setPicked(null);setView("doctor");}} radius={18} style={{width:"100%",padding:"14px",fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.ink}}>{t("Open Coffee Doctor")}</GlassBtn>
         </div>
-        <div style={{...glassThin(16),padding:"16px",marginBottom:14,background:C.card}}>
+        <div style={{border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",padding:"16px",marginBottom:14,background:C.card}}>
           <Lbl c="Rate this brew"/>
           <div style={{display:"flex",gap:6,marginBottom:14}}>
             {[1,2,3,4,5].map(n=><button key={n} onClick={()=>setRating(n)} style={{flex:1,padding:"10px 0",background:n<=rating?C.gold:"transparent",border:"1.5px solid "+(n<=rating?"rgba(201,162,39,0.8)":"rgba(150,130,210,0.3)"),borderRadius:12,backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",color:n<=rating?C.white:C.muted,fontFamily:F,fontWeight:800,fontSize:16,cursor:"pointer"}}>★</button>)}
           </div>
           <div style={{display:"flex",gap:10}}>
-            <button onClick={doSave} style={{flex:2,padding:"14px",background:C.accent,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>{t("Save to Journal")}</button>
-            <button onClick={doCopy} style={{flex:1,padding:"14px",background:"transparent",...glass(24),color:C.ink,fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>{t("Copy")}</button>
+            <GlassBtn tint="rgba(123,47,190,0.80)" onClick={doSave} radius={18} style={{flex:2,padding:"14px",fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.white}}>{t("Save to Journal")}</GlassBtn>
+            <GlassBtn onClick={doCopy} radius={18} style={{flex:1,padding:"14px",fontFamily:F,fontWeight:600,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",color:C.ink}}>{t("Copy")}</GlassBtn>
           </div>
           {saveMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.accent,textAlign:"center",paddingTop:12}}>{saveMsg}</div>}
           {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,textAlign:"center",paddingTop:8}}>{copyMsg}</div>}
         </div>
+      </div>}
+
+      {/* EDIT HUB — stacked display cards */}
+      {view==="edit"&&result&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
+        {headerNav("‹ Recipe","Edit",()=>setView("result"))}
+        {bigHead("What do you want\nto change?")}
+        <EditStack onPick={k=>setView(k)} items={[
+          {k:"bean",icon:Ic.bean,title:t("Bean"),desc:form.beanName||t("Coffee Name"),meta:[form.origin,form.process,form.roast].filter(Boolean).join(" · ")},
+          {k:"goal",icon:Ic.goal,title:t("Goal"),desc:t(form.goal||"Balanced"),meta:(form.brewMode==="Iced"||form.xBrewMode==="Iced")?t("Iced"):t("Hot")},
+          {k:"brew",icon:Ic.brew,title:t("Brew"),desc:mode==="xbloom"?"xBloom · "+(form.xDose||18)+"g · "+(form.xRatio||"1:16"):(form.brewer||t("Brewer"))+" · "+(form.dose||18)+"g",meta:mode==="xbloom"?(result.dripper||"Omni"):(form.grinder||"")},
+        ]}/>
+        <div style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.muted,textAlign:"center",marginTop:-26}}>Pick a card — change it, then generate again.</div>
       </div>}
 
       {/* SHARE CARD */}
@@ -1265,7 +1589,7 @@ export default function App(){
         {bigHead("Share\nyour brew")}
         <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,marginBottom:20,lineHeight:1.7}}>Screenshot this card and share it anywhere.</div>
         <ShareCard mode={mode} form={form} result={result}/>
-        <button onClick={doCopy} style={{width:"100%",padding:"14px",background:C.ink,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",marginTop:14}}>{t("Copy Recipe Text")}</button>
+        <GlassBtn dark onClick={doCopy} radius={18} style={{width:"100%",padding:"14px",fontFamily:F,fontWeight:700,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.white,marginTop:14}}>{t("Copy Recipe Text")}</GlassBtn>
         {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.stone,textAlign:"center",paddingTop:12}}>{copyMsg}</div>}
       </div>}
 
@@ -1276,16 +1600,16 @@ export default function App(){
         {!picked&&<>
           <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>{t("What do you want more of?")}</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:28}}>
-            {DOC_GOALS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{textAlign:"left",padding:"15px 16px",background:C.card,...glass(24),fontFamily:F,fontWeight:700,fontSize:14,color:C.ink,cursor:"pointer"}}>{it.tag}</button>)}
+            {DOC_GOALS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{textAlign:"left",padding:"15px 16px",background:C.card,border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",fontFamily:F,fontWeight:700,fontSize:14,color:C.ink,cursor:"pointer"}}>{it.tag}</button>)}
           </div>
           <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:12}}>{t("Or what went wrong?")}</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:22}}>
-            {DOC_PROBS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{padding:"11px 16px",background:"transparent",...glassThin(16),fontFamily:F,fontWeight:700,fontSize:13,color:C.stone,cursor:"pointer"}}>{it.tag}</button>)}
-            <button onClick={markPerfect} style={{padding:"11px 16px",background:C.gold,...glassAccent("rgba(201,162,39,0.55)",20,{boxShadow:"0 8px 24px rgba(201,162,39,0.14)"}),fontFamily:F,fontWeight:800,fontSize:13,color:C.white,cursor:"pointer"}}>★ Perfect</button>
+            {DOC_PROBS.map(it=><button key={it.tag} onClick={()=>pickDoctor(it)} style={{padding:"11px 16px",background:"transparent",border:"1px solid rgba(150,130,210,0.28)",borderRadius:16,backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",fontFamily:F,fontWeight:700,fontSize:13,color:C.stone,cursor:"pointer"}}>{it.tag}</button>)}
+            <GlassBtn tint="rgba(201,162,39,0.82)" onClick={markPerfect} style={{padding:"11px 16px",fontFamily:F,fontWeight:800,fontSize:13,color:C.white}}>★ Perfect</GlassBtn>
           </div>
         </>}
         {picked&&<div className="anim">
-          <div style={{...glass(24),padding:"20px",marginBottom:16,background:C.card}}>
+          <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",padding:"20px",marginBottom:16,background:C.card}}>
             <div style={{fontFamily:F,fontWeight:900,fontSize:20,color:C.ink,marginBottom:8,textTransform:"uppercase",letterSpacing:"-0.01em"}}>{picked.tag}</div>
             {picked.diag&&<div style={{fontFamily:F,fontWeight:700,fontSize:11,color:C.accent2,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10}}>Diagnosis: {picked.diag}</div>}
             <p style={{fontFamily:F,fontWeight:500,fontSize:14,color:C.stone,lineHeight:1.7,margin:0}}>{picked.why}</p>
@@ -1297,19 +1621,50 @@ export default function App(){
         </div>}
       </div>}
 
+      {/* EXPORT */}
+      {view==="export"&&result&&mode==="xbloom"&&<div className="anim" style={{...W,paddingTop:36,paddingBottom:40}}>
+        {headerNav("‹ Recipe","Export",()=>setView("result"))}
+        {bigHead("Export to\nxBloom")}
+        <div style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,marginBottom:16}}>One tap: the whole recipe lands on your clipboard and the xBloom app opens. In xBloom hit <strong>⊕ Create Recipe</strong> and enter the values — they're on your clipboard in the same order.</div>
+        <GlassBtn tint="rgba(123,47,190,0.82)" onClick={sendToXbloom} radius={18} style={{width:"100%",padding:"16px",fontFamily:F,fontWeight:800,fontSize:13,letterSpacing:"0.08em",textTransform:"uppercase",color:C.white,marginBottom:8}}>📲 {t("Send to xBloom")}</GlassBtn>
+        {copyMsg&&<div style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.accent,textAlign:"center",lineHeight:1.5,padding:"4px 8px 12px"}}>{copyMsg}</div>}
+        <div style={{height:10}}/>
+        <div style={{border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",marginBottom:14}}>
+          <div style={{background:C.ink,padding:"12px 16px"}}><span style={{fontFamily:F,fontWeight:800,fontSize:11,color:C.white,letterSpacing:"0.1em",textTransform:"uppercase"}}>Coffee — Basic Specs</span></div>
+          <SpecRow label="Dripper" value={result.dripper} sub={result.needsOther?"select Other in app":""}/>
+          <SpecRow label="Dose" value={result.dose+"g"}/>
+          <SpecRow label="Coffee : Water" value={result.ratio} sub={result.totalVolume+"ml"}/>
+          <SpecRow label="Grind Size" value={result.grindSize} sub={xbloomMicrons(result.grindSize)+"µm · "+grindZone(result.grindSize)}/>
+          <SpecRow label="Grinder Speed" value={result.rpm} sub="RPM"/>
+        </div>
+        <div style={{fontFamily:F,fontWeight:800,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:C.ink,marginBottom:10}}>Pours</div>
+        {(result.pours||[]).map((p,i)=><PourCard key={i} p={p} idx={i}/>)}
+        {result.over18&&<div style={{border:"1.5px solid rgba(123,47,190,0.50)",borderRadius:20,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 8px 24px rgba(123,47,190,0.14)",padding:"13px 16px",marginTop:14,background:C.card}}>
+          <div style={{fontFamily:F,fontWeight:700,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:C.accent,marginBottom:6}}>Dose over 18g</div>
+          <p style={{fontFamily:F,fontWeight:500,fontSize:12,color:C.stone,lineHeight:1.6,margin:0}}>Grind the full {result.dose}g and keep the same dripper. In-app: set dose 18g at 1:{result.appRatio} to match the water volume.</p>
+        </div>}
+        <GlassBtn tint="rgba(123,47,190,0.82)" onClick={doCopy} radius={18} style={{width:"100%",padding:"15px",fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.white,marginTop:8}}>{t("Copy Full Recipe")}</GlassBtn>
+        {copyMsg&&<div style={{fontFamily:F,fontWeight:700,fontSize:12,color:C.accent,textAlign:"center",paddingTop:12}}>{copyMsg}</div>}
+        <CardSection result={result} onMsg={setCopyMsg}/>
+      </div>}
+
       {showAbout&&<div onClick={()=>setShowAbout(false)} style={{position:"fixed",inset:0,background:"rgba(30,10,60,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:24}}>
-        <div onClick={e=>e.stopPropagation()} style={{background:C.bg,...glass(24),maxWidth:420,width:"100%",padding:"28px 26px"}}>
-          <div style={{fontFamily:FD,fontWeight:900,fontSize:24,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:6}}>Calibrated Pours</div>
+        <div onClick={e=>e.stopPropagation()} style={{background:C.bg,border:"1px solid rgba(255,255,255,0.65)",borderRadius:20,backdropFilter:"blur(20px) saturate(170%)",WebkitBackdropFilter:"blur(20px) saturate(170%)",boxShadow:"0 8px 28px rgba(94,68,180,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",overflow:"hidden",maxWidth:420,width:"100%",padding:"28px 26px"}}>
+          <div style={{fontFamily:F,fontWeight:900,fontSize:24,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.02em",marginBottom:6}}>Calibrated Pours</div>
           <div style={{fontFamily:F,fontWeight:600,fontSize:10,color:C.accent,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:16}}>Precision pour-over recipes</div>
           <p style={{fontFamily:F,fontWeight:500,fontSize:13,color:C.stone,lineHeight:1.7,margin:"0 0 14px"}}>Every coffee is different. Roast date, origin, variety, roast level and process all change how a bean extracts — so your recipe should change too. This app reads the bean and builds the recipe. No accounts, no cloud, everything stays on your device.</p>
           <p style={{fontFamily:F,fontWeight:600,fontSize:12,color:C.ink,margin:"0 0 18px"}}>Designed & built by Ahmed Al Falahi · UAE</p>
-          <button onClick={()=>setShowAbout(false)} style={{width:"100%",padding:"13px",background:C.ink,border:"none",borderRadius:16,color:C.white,fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Close</button>
+          <GlassBtn dark onClick={()=>setShowAbout(false)} radius={18} style={{width:"100%",padding:"13px",fontFamily:F,fontWeight:800,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",color:C.white}}>Close</GlassBtn>
         </div>
       </div>}
 
-      {/* FOOTER */}
-      <div style={{...W,borderTop:"1px solid rgba(120,100,190,0.25)",paddingTop:16,paddingBottom:16,marginTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",background:"transparent"}}>
-        <span style={{fontFamily:FD,fontWeight:900,fontSize:13,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Calibrated Pours</span>
+      {/* GLASS DOCK — floating nav; on landing only once a recipe exists (post-intro) */}
+      {dockOn&&<GlassDock view={view} hasRecipe={!!result}
+        onHome={()=>setView("landing")} onJournal={openSaved} onRecipe={()=>result&&setView("result")}/>}
+
+      {/* FOOTER — hidden during the white intro */}
+      <div style={{...W,borderTop:"1px solid rgba(120,100,190,0.25)",paddingTop:16,paddingBottom:16,marginTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",background:"transparent",opacity:lit?1:0,transition:"opacity 1s ease"}}>
+        <span style={{fontFamily:F,fontWeight:900,fontSize:13,color:C.ink,textTransform:"uppercase",letterSpacing:"-0.01em"}}>Calibrated Pours</span>
         <button onClick={()=>setShowAbout(true)} style={{fontFamily:F,fontWeight:600,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:C.muted,background:"none",border:"none",cursor:"pointer",padding:0}}>{t("About")}</button>
       </div>
     </div>
